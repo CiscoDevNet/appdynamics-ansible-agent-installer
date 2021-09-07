@@ -1,3 +1,3 @@
-# ansible-appdynamics-zeroagent
+# Ansible Collection - appdynamics.zeroagent
 
-Appdynamics agent installer role and plugin.
+Documentation for the collection.

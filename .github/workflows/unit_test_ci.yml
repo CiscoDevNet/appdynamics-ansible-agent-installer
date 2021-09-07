@@ -15,7 +15,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
         with:
-          path: ansible_collections
+          path: ansible_collections/appdynamics/zeroagent
 
       - name: Set up Python 3
         uses: actions/setup-python@v2
