@@ -16,7 +16,7 @@ readme: README.md
 # A list of the collection's content authors. Can be just the name or in the format 'Full Name <email> (url)
 # @nicks:irc/im.site#channel'
 authors:
-- your name <example@domain.com>
+- Vitaly Zhuravlev <vitaly.zhuravlev@appdynamics.com>
 
 
 ### OPTIONAL but strongly recommended
@@ -34,7 +34,11 @@ license_file: ''
 
 # A list of tags you want to associate with the collection for indexing/searching. A tag name has the same character
 # requirements as 'namespace' and 'name'
-tags: []
+tags: 
+ - appdynamics
+ - zeroagent
+ - apm
+ - agent_installer
 
 # Collections that this collection requires to be installed for it to be usable. The key of the dict is the
 # collection label 'namespace.name'. The value is a version range
@@ -49,7 +53,7 @@ repository: http://example.com/repository
 documentation: http://docs.example.com
 
 # The URL to the homepage of the collection/project
-homepage: http://example.com
+homepage: https://appdynamics.com
 
 # The URL to the collection issue tracker
 issues: http://example.com/issue/tracker
@@ -59,4 +63,3 @@ issues: http://example.com/issue/tracker
 # uses 'fnmatch' to match the files or directories. Some directories and files like 'galaxy.yml', '*.pyc', '*.retry',
 # and '.git' are always filtered
 build_ignore: []
-
