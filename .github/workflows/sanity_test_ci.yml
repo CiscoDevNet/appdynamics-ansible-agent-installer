@@ -4,8 +4,7 @@ on:
   push:
 defaults:
   run:
-    shell: bash
-    working-directory: appdynamics/zeroagent
+    working-directory: ansible_collections/appdynamics/zeroagent
 jobs:
   sanity_test:
     runs-on: ubuntu-latest
