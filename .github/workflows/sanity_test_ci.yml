@@ -24,7 +24,7 @@ jobs:
           python-version: '3.x'
 
       - name: Install test dependencies.
-        run: pip3 install ansible
+        run: python3 -m pip install ansible
       
       - name: Sanity test the collection
         run: |
