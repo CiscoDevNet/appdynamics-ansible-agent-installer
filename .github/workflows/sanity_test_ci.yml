@@ -1,6 +1,11 @@
 name: "appdynamics.sanity.test"
 on:
   pull_request:
+  push:
+defaults:
+  run:
+    shell: bash
+    working-directory: appdynamics/zeroagent
 jobs:
   sanity_test:
     runs-on: ubuntu-latest
