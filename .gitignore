@@ -1,3 +1,5 @@
 appdynamics/zeroagent/tests/output/
 sample_vars.yaml
 sample/get_token.py
+.DS_Store
+appdynamics/zeroagent/appdynamics-zeroagent-*.gz
