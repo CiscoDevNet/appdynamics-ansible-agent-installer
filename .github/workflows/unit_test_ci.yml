@@ -1,0 +1,30 @@
+name: "appdynamics.units.test"
+on:
+  pull_request:
+  push:
+defaults:
+  run:
+    working-directory: ansible_collections/appdynamics/zeroagent
+jobs:
+  unit_test:
+    runs-on: ubuntu-latest
+    env:
+      PY_COLORS: 1
+      ANSIBLE_FORCE_COLOR: 1
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+        with:
+          path: ansible_collections
+
+      - name: Set up Python 3
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install test dependencies.
+        run: python3 -m pip install ansible
+      
+      - name: Unit test the collection
+        run: |
+           ansible-test units --docker default -v
