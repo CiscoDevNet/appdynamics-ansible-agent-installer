@@ -50,7 +50,13 @@ from ansible.module_utils.urls import fetch_url
 
 
 import json
-from urllib.parse import urlencode
+
+try:
+    # python 3.x
+    from urllib.parse import urlencode
+except ImportError:
+    # python 2.x
+    from urllib import quote as urlencode
 
 
 def get_token(module):
