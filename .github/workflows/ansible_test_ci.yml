@@ -1,4 +1,4 @@
-name: "appdynamics.units.test"
+name: "appdynamics.sanity.test"
 on:
   pull_request:
   push:
@@ -6,11 +6,17 @@ defaults:
   run:
     working-directory: ansible_collections/appdynamics/zeroagent
 jobs:
-  unit_test:
+  ansible_test:
     runs-on: ubuntu-latest
     env:
       PY_COLORS: 1
       ANSIBLE_FORCE_COLOR: 1
+    strategy:
+      fail-fast: false
+      matrix:
+        test:
+          - sanity
+          - units
     steps:
       - name: Check out code
         uses: actions/checkout@v2
@@ -25,6 +31,6 @@ jobs:
       - name: Install test dependencies.
         run: python3 -m pip install ansible
       
-      - name: Unit test the collection
+      - name: Test the collection (${{ matrix.test }})
         run: |
-           ansible-test units --docker default -v --color=yes
+           ansible-test ${{ matrix.test }} --docker default -v --color=yes
