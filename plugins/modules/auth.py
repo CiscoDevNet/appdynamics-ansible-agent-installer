@@ -59,7 +59,7 @@ try:
     from urllib.parse import urlencode
 except ImportError:
     # python 2.x
-    from urllib import quote as urlencode
+    from urllib import urlencode
 
 
 def get_token(module):
