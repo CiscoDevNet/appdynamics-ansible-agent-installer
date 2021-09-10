@@ -27,4 +27,4 @@ jobs:
       
       - name: Unit test the collection
         run: |
-           ansible-test units --docker default -v
+           ansible-test units --docker default -v --color=yes

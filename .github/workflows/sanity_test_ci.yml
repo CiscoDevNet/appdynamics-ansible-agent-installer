@@ -27,4 +27,4 @@ jobs:
       
       - name: Sanity test the collection
         run: |
-           ansible-test sanity --docker default -v
+           ansible-test sanity --docker default -v --color=yes
