@@ -38,11 +38,9 @@ def test_all_provided(capfd):
 
     with pytest.raises(SystemExit):
         set_module_args({
-            "login": "SOMELOGIN",
-            "name": "SOMENAME",
-            "user_password": "SOMEPASS",
-            "url_password": "SOMEOTHERPASS",
-            "client": 1
+            "client_secret": "somesecret",
+            "client_id": "myname@account",
+            "url": "https://localhost",
         })
         auth.main()
 
