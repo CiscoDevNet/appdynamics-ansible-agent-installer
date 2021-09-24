@@ -35,6 +35,10 @@ options:
         required: false
         type: str
         default: /zero
+    api_token:
+        description: Token for controller auth.
+        required: false
+        type: str
     java_version:
         description: Java agent version to use. Defaults to using the latest.
         required: false
@@ -51,7 +55,7 @@ options:
         type: str
         default: latest
     zero_version:
-        descripton: Zero agent version to use. Defaults to using the latest.
+        description: Zero agent version to use. Defaults to using the latest.
         required: false
         type: str
         default: latest
@@ -75,6 +79,10 @@ options:
         required: false
         type: bool
         default: True
+    dest:
+        description: Provide path where to store downloaded artifacts
+        required: true
+        type: str
 
 
 author:
@@ -88,6 +96,7 @@ EXAMPLES = r'''
     url: https://company1.saas.appdynamics.com
     client_id: user@company1
     client_secret: somesecret
+    dest: /opt/appdynamics/zeroagent-store
 
 - name: Get download url and download java agent only
   appdynamics.zeroagent.download_cmd:
@@ -95,21 +104,20 @@ EXAMPLES = r'''
     client_id: user@company1
     client_secret: somesecret
     install_machine: False
+    dest: /opt/appdynamics/zeroagent-store
 '''
 
 RETURN = r'''
 
 '''
 
-from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.urls import fetch_url
-from ansible.module_utils.basic import env_fallback
-
-from ansible_collections.appdynamics.zeroagent.plugins.module_utils.auth import get_token
-
-import os
-import json
 import hashlib
+import json
+import os
+from ansible_collections.appdynamics.zeroagent.plugins.module_utils.auth import get_token
+from ansible.module_utils.basic import env_fallback
+from ansible.module_utils.urls import fetch_url
+from ansible.module_utils.basic import AnsibleModule
 
 try:
     # python 3.x
@@ -125,14 +133,17 @@ except ImportError:
 
 API_VERSION = "v1beta"
 DIGEST_FILE = ".download_cmd_digest"
+
+
 def get_download_cmd(module):
 
-    url = module.params["url"] + module.params["api_prefix"] + "/" + API_VERSION + "/install/downloadCommand"
+    url = module.params["url"] + module.params["api_prefix"] + \
+        "/" + API_VERSION + "/install/downloadCommand"
 
     # javaVersion=latest&machineVersion=latest&infraVersion=latest&zeroVersion=latest&multiline=true"
     url_params = {"multiline": "true",
                   "zeroVersion": module.params["zero_version"],
-    }
+                  }
     if module.params["install_java"]:
         url_params["javaVersion"] = module.params["java_version"]
     if module.params["install_machine"]:
@@ -153,47 +164,50 @@ def get_download_cmd(module):
         module.fail_json(msg="Failed to connect", error=info["msg"])
     if status_code >= 400:
         module.fail_json(msg=info["msg"], error=json.loads(info["body"]))
-    
+
     # Dropping first line with "mktemp -d -t appd-zero-XXXXXXX"
     if module.params['drop_mktemp']:
         return " ".join(["true"] + json.loads(resp_bytes.read().decode("utf-8"))[1:])
     else:
         return " ".join(json.loads(resp_bytes.read().decode("utf-8")))
 
-def get_checksum(download_cmd, dest):
 
+def get_checksum(download_cmd, dest):
     """Returns tuple of (checksum, changed)"""
 
     # If the download is not forced and there is a checksum, allow
     # checksum match to skip the download.
     download_cmd_digest = ""
-    try: 
+    try:
         download_cmd_digest = hashlib.md5(download_cmd).hexdigest()
     except TypeError:
-        download_cmd_digest = hashlib.md5(download_cmd.encode('utf-8')).hexdigest()
+        download_cmd_digest = hashlib.md5(
+            download_cmd.encode('utf-8')).hexdigest()
 
     try:
-        with open("%s/%s" % (dest, DIGEST_FILE) , 'r') as f:
+        with open("%s/%s" % (dest, DIGEST_FILE), 'r') as f:
             dest_digest = f.read()
     except (IOError, OSError) as e:
         # no DIGEST_FILE file found
         return (download_cmd_digest, True)
-        #raise AnsibleParserError("an error occurred while trying to read the file '%s': %s" % (DIGEST_FILE, to_native(e)), orig_exc=e)
+        # raise AnsibleParserError("an error occurred while trying to read the file '%s': %s" % (DIGEST_FILE, to_native(e)), orig_exc=e)
 
     if download_cmd_digest == dest_digest:
         return (download_cmd_digest, False)
     else:
         return (download_cmd_digest, True)
-    
 
 
 def run_module():
 
     module_args = dict(
         url=dict(type="str", required=True),
-        client_id=dict(type="str", required=True, fallback=(env_fallback, ['APPDYNAMICS_API_CLIENT_ID'])),
-        client_secret=dict(type="str", required=True, no_log=True, fallback=(env_fallback, ['APPDYNAMICS_API_CLIENT_SECRET'])),
-        api_token=dict(type="str", required=False, no_log=True, fallback=(env_fallback, ['APPDYNAMICS_API_TOKEN'])),
+        client_id=dict(type="str", required=True, fallback=(
+            env_fallback, ['APPDYNAMICS_API_CLIENT_ID'])),
+        client_secret=dict(type="str", required=True, no_log=True, fallback=(
+            env_fallback, ['APPDYNAMICS_API_CLIENT_SECRET'])),
+        api_token=dict(type="str", required=False, no_log=True,
+                       fallback=(env_fallback, ['APPDYNAMICS_API_TOKEN'])),
         api_prefix=dict(type="str", required=False, default="/zero"),
         java_version=dict(type="str", required=False, default="latest"),
         machine_version=dict(type="str", required=False, default="latest"),
@@ -201,8 +215,9 @@ def run_module():
         zero_version=dict(type="str", required=False, default="latest"),
         install_java=dict(type="bool", required=False, default=True),
         install_machine=dict(type="bool", required=False, default=True),
-        install_infra=dict(type="bool", required=False, default=True),
+        install_infra=dict(type="bool", required=False, default=False),
         drop_mktemp=dict(type="bool", required=False, default=True),
+        dest=dict(type="str", required=True)
     )
 
     result = dict(
@@ -230,14 +245,16 @@ def run_module():
     (checksum, checksum_changed) = get_checksum(download_cmd, dest)
     if force or checksum_changed:
 
-        (rc, out, err) = module.run_command("%s && printf %s > %s" % (download_cmd, checksum, DIGEST_FILE), check_rc=True, cwd=dest, use_unsafe_shell=True)
+        (rc, out, err) = module.run_command("%s && printf %s > %s" % (download_cmd,
+                                                                      checksum, DIGEST_FILE), check_rc=True, cwd=dest, use_unsafe_shell=True)
         if rc != 0:
-            module.fail_json(msg='Failed to retrieve submodule status: %s' % out + err)
-            result["message"] = out+err
+            module.fail_json(
+                msg='Failed to retrieve submodule status: %s' % out + err)
+            result["message"] = out + err
         result["changed"] = True
 
     if len(download_cmd) > 0:
-        
+
         result["download_cmd"] = download_cmd
         result["checksum"] = checksum
         result["checksum_changed"] = checksum_changed
@@ -247,6 +264,7 @@ def run_module():
 
 def main():
     run_module()
+
 
 if __name__ == "__main__":
     main()
