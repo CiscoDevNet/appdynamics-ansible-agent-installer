@@ -81,8 +81,12 @@ options:
         default: True
     dest:
         description: Provide path where to store downloaded artifacts
-        required: true
+        required: True
         type: str
+    force:
+        description: Forces agent redownload
+        required: False
+        type: bool
 
 
 author:
@@ -91,14 +95,14 @@ author:
 
 EXAMPLES = r'''
 #Get token
-- name: Get download url
+- name: Download agent installer
   appdynamics.zeroagent.download_cmd:
     url: https://company1.saas.appdynamics.com
     client_id: user@company1
     client_secret: somesecret
     dest: /opt/appdynamics/zeroagent-store
 
-- name: Get download url and download java agent only
+- name: Download agent installer (java agent only)
   appdynamics.zeroagent.download_cmd:
     url: https://company1.saas.appdynamics.com
     client_id: user@company1
@@ -217,7 +221,8 @@ def run_module():
         install_machine=dict(type="bool", required=False, default=True),
         install_infra=dict(type="bool", required=False, default=False),
         drop_mktemp=dict(type="bool", required=False, default=True),
-        dest=dict(type="str", required=True)
+        dest=dict(type="str", required=True),
+        force=dict(type="bool", required=False, default=False)
     )
 
     result = dict(
@@ -233,31 +238,33 @@ def run_module():
         required_one_of=[
             ("install_java", "install_machine", "install_infra"),
         ],
-        supports_check_mode=False
+        supports_check_mode=True
     )
 
     if not module.params["api_token"]:
         module.params["api_token"] = get_token(module)
-    dest = "/Users/vzhural/.appdynamics-zeroagent"
-    force = False
+
+    dest = module.params["dest"]
+    force = module.params["force"]
     download_cmd = get_download_cmd(module)
 
     (checksum, checksum_changed) = get_checksum(download_cmd, dest)
-    if force or checksum_changed:
 
-        (rc, out, err) = module.run_command("%s && printf %s > %s" % (download_cmd,
-                                                                      checksum, DIGEST_FILE), check_rc=True, cwd=dest, use_unsafe_shell=True)
-        if rc != 0:
-            module.fail_json(
-                msg='Failed to retrieve submodule status: %s' % out + err)
-            result["message"] = out + err
-        result["changed"] = True
+    if not module.check_mode:
+        if force or checksum_changed:
+            (rc, out, err) = module.run_command("%s && printf %s > %s" % (download_cmd,
+                                                                          checksum, DIGEST_FILE), check_rc=True, cwd=dest, use_unsafe_shell=True)
+            if rc != 0:
+                module.fail_json(
+                    msg='Failed to retrieve submodule status: %s' % out + err)
+                result["message"] = out + err
+            result["changed"] = True
 
     if len(download_cmd) > 0:
 
         result["download_cmd"] = download_cmd
-        result["checksum"] = checksum
-        result["checksum_changed"] = checksum_changed
+        # result["checksum"] = checksum
+        # result["checksum_changed"] = checksum_changed
 
     module.exit_json(**result)
 
