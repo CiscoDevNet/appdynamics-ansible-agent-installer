@@ -10,7 +10,7 @@ DOCUMENTATION = r'''
 ---
 module: download_cmd
 
-short_description: Module to get download command.
+short_description: Module to download AppDynamics agent installer.
 
 version_added: "1.0.0"
 
