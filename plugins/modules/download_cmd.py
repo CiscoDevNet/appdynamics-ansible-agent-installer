@@ -109,6 +109,7 @@ from ansible_collections.appdynamics.zeroagent.plugins.module_utils.auth import 
 
 import os
 import json
+import hashlib
 
 try:
     # python 3.x
@@ -123,7 +124,7 @@ except ImportError:
 #     from urllib.parse import urlencode
 
 API_VERSION = "v1beta"
-
+DIGEST_FILE = ".download_cmd_digest"
 def get_download_cmd(module):
 
     url = module.params["url"] + module.params["api_prefix"] + "/" + API_VERSION + "/install/downloadCommand"
@@ -138,7 +139,6 @@ def get_download_cmd(module):
         url_params["machineVersion"] = module.params["machine_version"]
     if module.params["install_infra"]:
         url_params["infraVersion"] = module.params["infra_version"]
-
 
     headers = {
         'Authorization': "Bearer " + module.params["api_token"]
@@ -159,6 +159,32 @@ def get_download_cmd(module):
         return " ".join(["true"] + json.loads(resp_bytes.read().decode("utf-8"))[1:])
     else:
         return " ".join(json.loads(resp_bytes.read().decode("utf-8")))
+
+def get_checksum(download_cmd, dest):
+
+    """Returns tuple of (checksum, changed)"""
+
+    # If the download is not forced and there is a checksum, allow
+    # checksum match to skip the download.
+    download_cmd_digest = ""
+    try: 
+        download_cmd_digest = hashlib.md5(download_cmd).hexdigest()
+    except TypeError:
+        download_cmd_digest = hashlib.md5(download_cmd.encode('utf-8')).hexdigest()
+
+    try:
+        with open("%s/%s" % (dest, DIGEST_FILE) , 'r') as f:
+            dest_digest = f.read()
+    except (IOError, OSError) as e:
+        # no DIGEST_FILE file found
+        return (download_cmd_digest, True)
+        #raise AnsibleParserError("an error occurred while trying to read the file '%s': %s" % (DIGEST_FILE, to_native(e)), orig_exc=e)
+
+    if download_cmd_digest == dest_digest:
+        return (download_cmd_digest, False)
+    else:
+        return (download_cmd_digest, True)
+    
 
 
 def run_module():
@@ -197,11 +223,24 @@ def run_module():
 
     if not module.params["api_token"]:
         module.params["api_token"] = get_token(module)
-
+    dest = "/Users/vzhural/.appdynamics-zeroagent"
+    force = False
     download_cmd = get_download_cmd(module)
-    if len(download_cmd) > 0:
+
+    (checksum, checksum_changed) = get_checksum(download_cmd, dest)
+    if force or checksum_changed:
+
+        (rc, out, err) = module.run_command("%s && printf %s > %s" % (download_cmd, checksum, DIGEST_FILE), check_rc=True, cwd=dest, use_unsafe_shell=True)
+        if rc != 0:
+            module.fail_json(msg='Failed to retrieve submodule status: %s' % out + err)
+            result["message"] = out+err
         result["changed"] = True
+
+    if len(download_cmd) > 0:
+        
         result["download_cmd"] = download_cmd
+        result["checksum"] = checksum
+        result["checksum_changed"] = checksum_changed
 
     module.exit_json(**result)
 
