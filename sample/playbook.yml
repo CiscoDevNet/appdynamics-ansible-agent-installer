@@ -1,0 +1,48 @@
+- name: Download zfi agents
+  hosts: localhost
+  connection: local
+  run_once: yes
+  tasks:
+   # scope of role download_agent
+   # can be run locally (ansible controller)
+   # or directly (remote)
+   # configurable path where to extract agents
+    - name: Get download cmd
+      register: download_cmd
+      appdynamics.zeroagent.download_cmd:
+        client_id: "{{ client_id }}"
+        client_secret: "{{ client_secret }}"
+        url: "{{ url }}"
+    - name: Ensure target dir is present and empty
+      file:
+        path: ~/.appdynamics-zeroagent
+        state: "{{ item }}"
+        mode: 0775
+      with_items:
+          - absent
+          - directory
+    - name: Download agents
+      register: get_agents
+      changed_when: false
+      shell:
+        chdir: ~/.appdynamics-zeroagent
+        cmd: |
+          {{ download_cmd.download_cmd }}
+    - name: Print output
+      debug:
+        msg: "{{ get_agents.stdout }}"
+
+    # additional step to push archive
+    # copy:
+
+    # scope of role install_agent
+    # use install API second time?
+
+    - name: Get install command
+      register: install_cmd
+      appdynamics.zeroagent.install_cmd:
+        client_id: "{{ client_id }}"
+        client_secret: "{{ client_secret }}"
+        url: "{{ url }}"
+        accesskey:
+        controller_url:
