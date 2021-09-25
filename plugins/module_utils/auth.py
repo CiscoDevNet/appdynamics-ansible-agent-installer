@@ -22,7 +22,7 @@ def get_token(module):
     if "@" not in module.params["client_id"]:
         module.fail_json(msg="Please provide client_id in form user@company1", error="Invalid client_id")
 
-    url = module.params["url"] + "/auth/v1/oauth/token"
+    url = module.params["controller_url"] + "/auth/v1/oauth/token"
     payload = {"grant_type": "client_credentials",
                "client_id": module.params["client_id"],
                "client_secret": module.params["client_secret"]}

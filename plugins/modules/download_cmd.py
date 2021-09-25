@@ -18,7 +18,7 @@ description: |
     Gets download command in order to download required agent installer.
 
 options:
-    url:
+    controller_url:
         description: Appdynamics Controller API URL (i.e. https://<your controller>)
         required: true
         type: str
@@ -97,14 +97,14 @@ EXAMPLES = r'''
 #Get token
 - name: Download agent installer
   appdynamics.zeroagent.download_cmd:
-    url: https://company1.saas.appdynamics.com
+    controller_url: https://company1.saas.appdynamics.com
     client_id: user@company1
     client_secret: somesecret
     dest: /opt/appdynamics/zeroagent-store
 
 - name: Download agent installer (java agent only)
   appdynamics.zeroagent.download_cmd:
-    url: https://company1.saas.appdynamics.com
+    controller_url: https://company1.saas.appdynamics.com
     client_id: user@company1
     client_secret: somesecret
     install_machine: False
@@ -141,7 +141,7 @@ DIGEST_FILE = ".download_cmd_digest"
 
 def get_download_cmd(module):
 
-    url = module.params["url"] + module.params["api_prefix"] + \
+    url = module.params["controller_url"] + module.params["api_prefix"] + \
         "/" + API_VERSION + "/install/downloadCommand"
 
     # javaVersion=latest&machineVersion=latest&infraVersion=latest&zeroVersion=latest&multiline=true"
@@ -205,7 +205,7 @@ def get_checksum(download_cmd, dest):
 def run_module():
 
     module_args = dict(
-        url=dict(type="str", required=True),
+        controller_url=dict(type="str", required=True),
         client_id=dict(type="str", required=True, fallback=(
             env_fallback, ['APPDYNAMICS_API_CLIENT_ID'])),
         client_secret=dict(type="str", required=True, no_log=True, fallback=(
