@@ -252,7 +252,7 @@ def run_module():
 
     if not module.check_mode:
         if force or checksum_changed:
-            (rc, out, err) = module.run_command("%s && printf %s > %s" % (download_cmd,
+            (rc, out, err) = module.run_command("rm -f %s/* && %s && printf %s > %s" % (dest, download_cmd,
                                                                           checksum, DIGEST_FILE), check_rc=True, cwd=dest, use_unsafe_shell=True)
             if rc != 0:
                 module.fail_json(
@@ -260,11 +260,11 @@ def run_module():
                 result["message"] = out + err
             result["changed"] = True
 
-    if len(download_cmd) > 0:
+    # if len(download_cmd) > 0:
 
-        result["download_cmd"] = download_cmd
-        # result["checksum"] = checksum
-        # result["checksum_changed"] = checksum_changed
+    result["download_cmd"] = download_cmd
+    result["checksum"] = checksum
+    result["checksum_changed"] = checksum_changed
 
     module.exit_json(**result)
 

@@ -1,0 +1,37 @@
+---
+galaxy_info:
+  author: Vitaly Zhuravlev (https://github.com/v-zhuravlev)
+  role_name: install
+  company: AppDynamics
+  description: This role installs and configures the AppDynamics Agent Installer
+  license: Apache2
+  min_ansible_version: 2.9
+  platforms:
+    - name: Ubuntu
+      versions:
+        - precise
+        - quantal
+        - raring
+        - saucy
+        - trusty
+        - xenial
+        - artful
+        - bionic
+    - name: Debian
+      versions:
+        - wheezy
+        - jessie
+        - stretch
+        - buster
+    - name: EL
+      versions:
+        - 8
+        - 7
+        - 6
+
+  galaxy_tags:
+    - apm
+    - monitoring
+    - appdynamics
+
+dependencies: []

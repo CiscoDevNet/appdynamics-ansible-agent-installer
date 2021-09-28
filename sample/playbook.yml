@@ -1,48 +1,48 @@
-- name: Download zfi agents
-  hosts: localhost
-  connection: local
-  run_once: yes
+- name: Install zfi agents
+  hosts: vagrant
+  vars:
+    appdynamics_zeroagent_temp_local_dir: /tmp/.appdynamics-zeroagent
   tasks:
-   # scope of role download_agent
-   # can be run locally (ansible controller)
-   # or directly (remote)
-   # configurable path where to extract agents
-    - name: Get download cmd
+    - name: Ensure target dir is present # and empty( add absent)
+      run_once: yes
+      delegate_to: localhost
+      file:
+        path: "{{ appdynamics_zeroagent_temp_local_dir }}"
+        state: "{{ item }}"
+        mode: 0775
+      with_items:
+          # - absent
+          - directory
+
+    - name: Download
+      run_once: yes
+      delegate_to: localhost
       register: download_cmd
       appdynamics.zeroagent.download_cmd:
         client_id: "{{ client_id }}"
         client_secret: "{{ client_secret }}"
-        url: "{{ url }}"
-    - name: Ensure target dir is present and empty
+        controller_url: "{{ controller_url }}"
+        dest: "{{ appdynamics_zeroagent_temp_local_dir }}"
+      #check_mode: yes
+
+    - name: Clean remote stage dir
       file:
-        path: ~/.appdynamics-zeroagent
+        path: "{{ appdynamics_zeroagent_stage_dir }}"
         state: "{{ item }}"
         mode: 0775
       with_items:
           - absent
           - directory
-    - name: Download agents
-      register: get_agents
-      changed_when: false
-      shell:
-        chdir: ~/.appdynamics-zeroagent
-        cmd: |
-          {{ download_cmd.download_cmd }}
-    - name: Print output
-      debug:
-        msg: "{{ get_agents.stdout }}"
+      # when: download_cmd.changed
 
-    # additional step to push archive
-    # copy:
+    - name: Copy files to hosts
+      copy:
+        src: "{{ appdynamics_zeroagent_temp_local_dir }}/"
+        dest: "/tmp/zeroagent-stage/{{ download_cmd.checksum }}"
 
-    # scope of role install_agent
-    # use install API second time?
+    - name: Install zeroagent
+      import_role:
+        name: appdynamics.zeroagent.install
+      vars:
+        appdynamics_zeroagent_stage_dir: "/tmp/zeroagent-stage/{{ download_cmd.checksum }}"
 
-    - name: Get install command
-      register: install_cmd
-      appdynamics.zeroagent.install_cmd:
-        client_id: "{{ client_id }}"
-        client_secret: "{{ client_secret }}"
-        url: "{{ url }}"
-        accesskey:
-        controller_url:

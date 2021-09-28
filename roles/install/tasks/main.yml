@@ -1,0 +1,8 @@
+# - include: dependencies.yml
+#   tags: zeroagent_dependencies
+
+- include: uninstall.yml
+  tags: zeroagent_uninstall
+
+- include_tasks: install.yml
+  tags: zeroagent_install

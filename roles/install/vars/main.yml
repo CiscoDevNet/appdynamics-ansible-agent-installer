@@ -1,0 +1,1 @@
+appdynamics_zeroagent_dir: "{{ appdynamics_zeroagent_install_path if appdynamics_zeroagent_install_path == '/opt/appdynamics/zeroagent' else appdynamics_zeroagent_install_path+'/appdynamics/zeroagent' }}"
