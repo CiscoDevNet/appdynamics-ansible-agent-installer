@@ -63,30 +63,31 @@ options:
         description: Set to true to download Java agent
         required: false
         type: bool
-        default: True
+        default: true
     install_machine:
         description: Set to true to download machine agent
         required: false
         type: bool
-        default: True
+        default: true
     install_infra:
         description: Set to true to download infra agent
         required: false
         type: bool
-        default: False
+        default: false
     drop_mktemp:
         description: Drop part of the download command that creates temporary folder (i.e. mktemp -d -t appd-zero-XXXXXXX)
         required: false
         type: bool
-        default: True
+        default: true
     dest:
         description: Provide path where to store downloaded artifacts
-        required: True
+        required: true
         type: str
     force:
         description: Forces agent redownload
-        required: False
+        required: false
         type: bool
+        default: false
 
 
 author:
