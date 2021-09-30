@@ -1,0 +1,47 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: vagrant
+  provider:
+    # Can be any supported provider (virtualbox, parallels, libvirt, etc)
+    name: virtualbox
+
+platforms:
+  - name: ubuntu20
+    config_options:
+      ssh.keep_alive: yes
+      ssh.remote_user: 'vagrant'
+      synced_folder: true
+      cachier: false
+    box: ubuntu/focal64
+    # box_version: 32.20200422.0
+    memory: 512
+    cpus: 1
+  - name: centos8
+    config_options:
+      ssh.keep_alive: yes
+      ssh.remote_user: 'vagrant'
+      synced_folder: true
+      cachier: false
+    box: centos/8
+    # box_version: 32.20200422.0
+    memory: 512
+    cpus: 1
+
+provisioner:
+  name: ansible
+  inventory:
+    group_vars:
+      all:
+        client_id: ${APPDYNAMICS_API_CLIENT_ID}
+        client_secret: ${APPDYNAMICS_API_CLIENT_SECRET}
+        controller_account_access_key: ${APPDYNAMICS_AGENT_ACCOUNT_ACCESS_KEY:-dummykey}
+        controller_url: ${APPDYNAMICS_CONTROLLER_URL}
+        controller_account_name: ${APPDYNAMICS_AGENT_ACCOUNT_NAME}
+        application_name: vzhuravlev-zfi-ansible
+  playbooks:
+    prepare: prepare.yaml
+    converge: ${MOLECULE_PLAYBOOK:-converge.yml}
+verifier:
+  name: ansible

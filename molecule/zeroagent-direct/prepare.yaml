@@ -1,0 +1,10 @@
+---
+- name: Prepare
+  hosts: all
+  tasks:
+    - name: Install required packages
+      become: yes
+      package:
+        name: 
+          - unzip
+          - curl

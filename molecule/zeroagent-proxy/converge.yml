@@ -1,8 +1,10 @@
-- name: Install zfi agents
-  hosts: vagrant
+---
+- name: Converge
+  hosts: all
   vars:
     appdynamics_zeroagent_temp_local_dir: /tmp/.appdynamics-zeroagent
     appdynamics_zeroagent_stage_dir: /tmp/zeroagent-stage
+    application_name: vzhuravlev-zfi-ansible
   tasks:
     - name: Ensure target dir is present # and empty( add absent)
       run_once: yes
@@ -26,15 +28,16 @@
         dest: "{{ appdynamics_zeroagent_temp_local_dir }}"
       #check_mode: yes
 
-    - name: Clean remote stage dir
-      file:
-        path: "{{ appdynamics_zeroagent_stage_dir }}"
-        state: "{{ item }}"
-        mode: 0775
-      with_items:
-          - absent
-          - directory
-      # when: download_cmd.changed
+    # - name: Clean remote stage dir
+    #   beomce
+    #   file:
+    #     path: "{{ appdynamics_zeroagent_stage_dir }}"
+    #     state: "{{ item }}"
+    #     mode: 0775
+    #   with_items:
+    #       - absent
+    #       - directory
+    #   # when: download_cmd.changed
 
     - name: Copy files to hosts
       copy:
@@ -44,4 +47,4 @@
     - name: Install zeroagent
       import_role:
         name: appdynamics.zeroagent.install
-
+      tags: molecule-idempotence-notest

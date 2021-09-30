@@ -1,0 +1,49 @@
+name: "appdynamics.zeroagent.install"
+jobs:
+  molecule:
+    runs-on: macos-latest # where vagrant is
+    env:
+      PY_COLORS: 1
+      ANSIBLE_FORCE_COLOR: 1
+    strategy:
+      fail-fast: true
+      matrix:
+        distro:
+          - centos8
+          - debian10
+        molecule_tests:
+          - zeroagent-direct
+          - zeroagent-proxy
+        ansible_ver:
+          - "==2.9.*"
+          - "==2.10.*"
+          - ">=2.10" # latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Set up Python 3
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+    
+      - name: Install test dependencies.
+        run: pip3 install "ansible${{ matrix.ansible_ver }}" molecule-vagrant python-vagrant
+      
+      - name: Build the collection
+        run: |
+          collection_file=$( basename $(ansible-galaxy collection build -f | awk -F" " '{print $NF}'))
+          echo "COLLECTION_FILE=$collection_file" >> $GITHUB_ENV
+        
+      - name: Install the collection
+        run: ansible-galaxy collection install ${{ env.COLLECTION_FILE }}
+      
+      - name: Run role tests
+        run: >-
+          molecule --version &&
+          ansible --version &&
+          molecule --base-config molecule/base-vagrant.yml --debug test -s {{ matrix.molecule_tests}}
+        env: 
+          PY_COLORS: '1'
+          ANSIBLE_FORCE_COLOR: '1'
+          MOLECULE_DISTRO: ${{ matrix.distro }}
