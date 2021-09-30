@@ -1,4 +1,10 @@
 name: "appdynamics.zeroagent.install"
+on:
+  pull_request:
+  push:
+defaults:
+  run:
+    working-directory: ansible_collections/appdynamics/zeroagent
 jobs:
   molecule:
     runs-on: macos-latest # where vagrant is
@@ -21,6 +27,8 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v2
+        with:
+          path: ansible_collections/appdynamics/zeroagent
 
       - name: Set up Python 3
         uses: actions/setup-python@v2
