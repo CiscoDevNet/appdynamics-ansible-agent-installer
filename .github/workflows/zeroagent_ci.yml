@@ -14,9 +14,6 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        distro:
-          - centos8
-          - debian10
         molecule_tests:
           - zeroagent-direct
           - zeroagent-proxy
