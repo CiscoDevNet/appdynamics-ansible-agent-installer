@@ -114,6 +114,22 @@ EXAMPLES = r'''
 
 RETURN = r'''
 
+download_cmd:
+    description: Shell download command
+    returned: success
+    type: str
+    sample: TODO
+checksum:
+    description: Checksum of download command. Can be used to make decisions if agent upgrade is required.
+    returned: success
+    type: str
+    sample: TODO
+checksum_changed:
+    description: Indicates if command checksum is changed
+    returned: success
+    type: bool
+    sample: true
+
 '''
 
 import hashlib
