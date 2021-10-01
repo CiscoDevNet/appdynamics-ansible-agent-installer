@@ -1,0 +1,126 @@
+- name: Download zfi agents
+  hosts: vagrant
+  #connection: local
+  #run_once: yes
+  tags: download
+  tasks:
+   # scope of role download_agent 
+   # can be run locally (ansible controller)
+   # or directly (remote)
+   # configurable path where to extract agents
+    - name: Ensure target dir is present and empty
+      file:
+        path: ~/.appdynamics-agent_installer
+        state: "{{ item }}"
+        mode: 0775
+      with_items:
+          # - absent
+          - directory
+    - name: Download
+      register: download
+      appdynamics.agent_installer.download:
+        client_id: "{{ client_id }}"
+        client_secret: "{{ client_secret }}"
+        controller_url: "{{ controller_url }}"
+        dest: /home/vagrant/.appdynamics-agent_installer
+      #check_mode: yes
+
+    # - name: Download agents
+    #   register: get_agents
+    #   changed_when: false
+    #   shell:
+    #     chdir: ~/.appdynamics-agent_installer
+    #     cmd: |
+    #       {{ download.download_cmd }}
+    # - name: Print output
+    #   debug:
+    #     msg: "{{ get_agents.stdout }}"
+
+    # additional step to push archive
+    # copy:
+
+    # scope of role install_agent
+    # use install API second time?
+
+    # - name: Get install command
+    #   register: install_cmd
+    #   appdynamics.agent_installer.install_cmd:
+    #     client_id: "{{ client_id }}"
+    #     client_secret: "{{ client_secret }}"
+    #     url: "{{ url }}"
+    #     accesskey:
+    #     controller_url:
+
+- name: Appdynamics install Zero Friction Installer Agent
+  hosts: vagrant
+  tags: install
+  vars:
+    #appd_zfi_agent_distrib: /ansible_tower/zero-agent.tar
+    appdynamics_agent_installer_stage_dir: /home/vagrant/.appdynamics-agent_installer
+    appdynamics_agent_installer_install_path: /opt/appdynamics/agent_installer
+    # appdynamics_agent_installer_enable_systemd: true
+  tasks:
+    # - name: Ensure target dir exists
+    #   file:
+    #     path: "{{ appdynamics_agent_installer_stage_dir }}"
+    #     state: directory
+    # - name: Copy zfi agent archive
+    #   unarchive:
+    #     src: "{{ appd_zfi_agent_distrib }}"
+    #     dest: "{{ appdynamics_agent_installer_stage_dir }}"
+    - name: Install required packages
+      become: yes
+      package:
+        name: 
+          - unzip
+          - curl
+    - name: Uninstall ZFI agent
+      become: yes
+      shell: >
+        cd {{ appdynamics_agent_installer_install_path }}/bin &&
+        sudo ./zeroctl uninstall
+      ignore_errors: yes
+    - name: Install ZFI agent as sudo
+      become: "{{ appdynamics_agent_installer_become | bool }}"
+      shell: >
+        cd {{ appdynamics_agent_installer_stage_dir }} &&
+        ./zero-agent.sh
+        install 
+        --application '{{ application_name }}' 
+        --account '{{ controller_account_name }}'
+        --access-key '{{ controller_account_access_key }}'
+        --service-url '{{ controller_url }}'
+        --install-path '{{ appdynamics_agent_installer_install_path }}'
+        {% appdynamics_agent_installer_become %}--systemd='{{ appdynamics_agent_installer_enable_systemd | bool | lower }}'{% endif%}
+        {% if appdynamics_agent_installer_enable_proxy %}--proxy-url 'http:://{{ appdynamics_agent_installer_proxy_host }}:{{ appdynamics_agent_installer_proxy_port }}'{% endif %}
+      # ubuntu 14.04 - no systemd!
+      # agent Installer Platform is now installed by root and thus enabled for all\nOS users.\n\nAppropriate installer components have been activated once but will require\nreactivation on subsequent root logins and/or system restarts because you\nopted out of the systemd integration or no serviceable systemd was found.\n\n
+      # To accomplish that, the following command must be invoked by root:\n\n  /opt/appdynamics/agent_installer/bin/zeroctl start --quiet.\n
+        
+      # --proxy-url=http:://{{ appdynamics_agent_installer_proxy_host }}:{{ appdynamics_agent_installer_proxy_port }}
+      register: output
+      # failed_when: "output.rc != 0 and 'An active installation at install path {{ appdynamics_agent_installer_install_path }} already exists' not in output.stdout"
+    - name: Print install output
+      debug:
+        var: output.stdout
+
+      # Usage:
+      #   zeroctl install [flags]
+
+      # Flags:
+      #       --log-level string                Logging level (choose from [panic fatal error warning info debug trace])
+      #       --max-log-rate int                Maximum log msg rate (default -2)
+      #       --disable-instrumentors strings   Instrumentors to disable (choose from [java tomcat jboss glassfish weblogic websphere all])
+      #       --enable-instrumentors strings    Instrumentors to enable (choose from [java tomcat jboss glassfish weblogic websphere all])
+      #       --application string              Controller application name
+      #       --account string                  Controller account name
+      #       --access-key string               Account access key
+      #       --service-url string              Service URL
+      #       --javaagent string                Java agent (choose from [dynamic ibm sun])
+      #       --jboss-log-manager-modify        LogManager args for JBoss (choose from [true false])
+      #       --proxy-url string                Proxy URL
+      #       --install-path string             Zero Agent installation path (default "/home/vagrant/appdynamics/agent_installer")
+      #   -h, --help                            help for install
+
+      # To uninstall run
+      #sudo ./zeroctl uninstall

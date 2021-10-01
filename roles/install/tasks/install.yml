@@ -20,7 +20,7 @@
       --service-url '{{ controller_url }}'
       --install-path '{{ appdynamics_agent_installer_install_path }}'
       {% if appdynamics_agent_installer_user == 'root' %}--systemd='{{ appdynamics_agent_installer_enable_systemd | bool | lower }}'{% endif%}
-      {% if enable_proxy %}--proxy-url 'http:://{{ proxy_host }}:{{ proxy_port }}'{% endif %}
+      {% if appdynamics_agent_installer_enable_proxy %}--proxy-url 'http:://{{ appdynamics_agent_installer_proxy_host }}:{{ appdynamics_agent_installer_proxy_port }}'{% endif %}
   register: agent_installer_install_output
 
 - name: Print install output

@@ -1,6 +1,6 @@
-# proxy_host
-# proxy_port
-enable_proxy: False
+# appdynamics_agent_installer_proxy_host
+# appdynamics_agent_installer_proxy_port
+appdynamics_agent_installer_enable_proxy: False
 
 appdynamics_agent_installer_install_path: "{{ '/opt/appdynamics/zeroagent' if appdynamics_agent_installer_user == 'root' else ansible_env.HOME }}"
 appdynamics_agent_installer_stage_dir: /tmp/.appdynamics-agent_installer
