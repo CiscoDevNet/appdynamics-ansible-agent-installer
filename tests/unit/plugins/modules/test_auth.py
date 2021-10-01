@@ -7,9 +7,9 @@ import io
 from ansible.module_utils import urls
 # from _pytest.monkeypatch import monkeypatch
 
-from ansible_collections.appdynamics.zeroagent.tests.unit.compat import unittest
-from ansible_collections.appdynamics.zeroagent.tests.unit.compat.mock import patch
-from ansible_collections.appdynamics.zeroagent.tests.unit.plugins.module_utils.utils import (
+from ansible_collections.appdynamics.agent_installer.tests.unit.compat import unittest
+from ansible_collections.appdynamics.agent_installer.tests.unit.compat.mock import patch
+from ansible_collections.appdynamics.agent_installer.tests.unit.plugins.module_utils.utils import (
     exit_json,
     set_module_args,
     fail_json,
@@ -19,7 +19,7 @@ from ansible_collections.appdynamics.zeroagent.tests.unit.plugins.module_utils.u
 
 # from ansible.module_utils import basic
 # from ansible.module_utils.common.text.converters import to_bytes
-from ansible_collections.appdynamics.zeroagent.plugins.modules import auth
+from ansible_collections.appdynamics.agent_installer.plugins.modules import auth
 
 
 def test_name_is_a_required_parameter(capfd):

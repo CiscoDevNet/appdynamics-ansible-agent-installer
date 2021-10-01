@@ -4,7 +4,7 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 import pytest
-from ansible_collections.appdynamics.zeroagent.plugins.modules import auth
+from ansible_collections.appdynamics.agent_installer.plugins.modules import auth
 
 
 @pytest.fixture

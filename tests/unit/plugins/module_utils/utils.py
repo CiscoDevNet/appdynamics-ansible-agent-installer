@@ -3,8 +3,8 @@ __metaclass__ = type
 
 import json
 
-from ansible_collections.appdynamics.zeroagent.tests.unit.compat import unittest
-from ansible_collections.appdynamics.zeroagent.tests.unit.compat.mock import patch
+from ansible_collections.appdynamics.agent_installer.tests.unit.compat import unittest
+from ansible_collections.appdynamics.agent_installer.tests.unit.compat.mock import patch
 from ansible.module_utils import basic
 from ansible.module_utils._text import to_bytes
 

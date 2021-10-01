@@ -8,7 +8,7 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: download_cmd
+module: download
 
 short_description: Module to download AppDynamics agent installer.
 
@@ -97,24 +97,24 @@ author:
 EXAMPLES = r'''
 #Get token
 - name: Download agent installer
-  appdynamics.zeroagent.download_cmd:
+  appdynamics.agent_installer.download:
     controller_url: https://company1.saas.appdynamics.com
     client_id: user@company1
     client_secret: somesecret
-    dest: /opt/appdynamics/zeroagent-store
+    dest: /opt/appdynamics/agent_installer-store
 
 - name: Download agent installer (java agent only)
-  appdynamics.zeroagent.download_cmd:
+  appdynamics.agent_installer.download:
     controller_url: https://company1.saas.appdynamics.com
     client_id: user@company1
     client_secret: somesecret
     install_machine: False
-    dest: /opt/appdynamics/zeroagent-store
+    dest: /opt/appdynamics/agent_installer-store
 '''
 
 RETURN = r'''
 
-download_cmd:
+download:
     description: Shell download command
     returned: success
     type: str
@@ -135,7 +135,7 @@ checksum_changed:
 import hashlib
 import json
 import os
-from ansible_collections.appdynamics.zeroagent.plugins.module_utils.auth import get_token
+from ansible_collections.appdynamics.agent_installer.plugins.module_utils.auth import get_token
 from ansible.module_utils.basic import env_fallback
 from ansible.module_utils.urls import fetch_url
 from ansible.module_utils.basic import AnsibleModule
@@ -153,7 +153,7 @@ except ImportError:
 #     from urllib.parse import urlencode
 
 API_VERSION = "v1beta"
-DIGEST_FILE = ".download_cmd_digest"
+DIGEST_FILE = ".download_digest"
 
 
 def get_download_cmd(module):
@@ -270,7 +270,7 @@ def run_module():
     if not module.check_mode:
         if force or checksum_changed:
             (rc, out, err) = module.run_command("rm -f %s/* && %s && printf %s > %s" % (dest, download_cmd,
-                                                                          checksum, DIGEST_FILE), check_rc=True, cwd=dest, use_unsafe_shell=True)
+                                                                                        checksum, DIGEST_FILE), check_rc=True, cwd=dest, use_unsafe_shell=True)
             if rc != 0:
                 module.fail_json(
                     msg='Failed to retrieve submodule status: %s' % out + err)

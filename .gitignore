@@ -2,6 +2,6 @@ tests/output/
 sample_vars.yaml
 sample/get_token.py
 .DS_Store
-appdynamics-zeroagent-*.gz
+appdynamics-agent_installer-*.gz
 .vagrant
 Vagrantfile

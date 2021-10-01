@@ -5,12 +5,12 @@
 # proxy_port
 enable_proxy: False
 
-appdynamics_zeroagent_install_path: "{{ '/opt/appdynamics/zeroagent' if appdynamics_zeroagent_user == 'root' else ansible_env.HOME }}"
-appdynamics_zeroagent_stage_dir: /home/vagrant/.appdynamics-zeroagent
-appdynamics_zeroagent_enable_systemd: True
+appdynamics_agent_installer_install_path: "{{ '/opt/appdynamics/zeroagent' if appdynamics_agent_installer_user == 'root' else ansible_env.HOME }}"
+appdynamics_agent_installer_stage_dir: /home/vagrant/.appdynamics-agent_installer
+appdynamics_agent_installer_enable_systemd: True
 
 # Install as sudo or as user
-appdynamics_zeroagent_user: root
+appdynamics_agent_installer_user: root
 
 # panic fatal error warning info debug trace
-appdynamics_zeroagent_log_level: info
+appdynamics_agent_installer_log_level: info

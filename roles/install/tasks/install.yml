@@ -1,28 +1,28 @@
 - name: Ensure ./zero-agent.sh is executable
   file:
-    path: "{{ appdynamics_zeroagent_stage_dir }}/zero-agent.sh"
+    path: "{{ appdynamics_agent_installer_stage_dir }}/zero-agent.sh"
     mode: "u+x,g+x,a+x"
     state: file
 
-- name: Install appdynamics zeroagent
-  become_user: "{{ appdynamics_zeroagent_user }}"
+- name: Install appdynamics agent_installer
+  become_user: "{{ appdynamics_agent_installer_user }}"
   become: yes
   shell: 
-    chdir: "{{ appdynamics_zeroagent_stage_dir }}"
-    creates: "{{ appdynamics_zeroagent_dir }}/bin/zeroagent"
+    chdir: "{{ appdynamics_agent_installer_stage_dir }}"
+    creates: "{{ appdynamics_agent_installer_dir }}/bin/zeroagent"
     cmd: >
       ./zero-agent.sh
       install
-      --log-level '{{ appdynamics_zeroagent_log_level }}'
+      --log-level '{{ appdynamics_agent_installer_log_level }}'
       --application '{{ application_name }}' 
       --account '{{ controller_account_name }}'
       --access-key '{{ controller_account_access_key }}'
       --service-url '{{ controller_url }}'
-      --install-path '{{ appdynamics_zeroagent_install_path }}'
-      {% if appdynamics_zeroagent_user == 'root' %}--systemd='{{ appdynamics_zeroagent_enable_systemd | bool | lower }}'{% endif%}
+      --install-path '{{ appdynamics_agent_installer_install_path }}'
+      {% if appdynamics_agent_installer_user == 'root' %}--systemd='{{ appdynamics_agent_installer_enable_systemd | bool | lower }}'{% endif%}
       {% if enable_proxy %}--proxy-url 'http:://{{ proxy_host }}:{{ proxy_port }}'{% endif %}
-  register: zeroagent_install_output
+  register: agent_installer_install_output
 
 - name: Print install output
   debug:
-    var: zeroagent_install_output.stdout
+    var: agent_installer_install_output.stdout

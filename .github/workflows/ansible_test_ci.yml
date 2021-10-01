@@ -1,10 +1,10 @@
-name: "appdynamics.sanity.test"
+name: "ansible-test"
 on:
   pull_request:
   push:
 defaults:
   run:
-    working-directory: ansible_collections/appdynamics/zeroagent
+    working-directory: ansible_collections/appdynamics/agent_installer
 jobs:
   ansible_test:
     runs-on: ubuntu-latest
@@ -21,7 +21,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
         with:
-          path: ansible_collections/appdynamics/zeroagent
+          path: ansible_collections/appdynamics/agent_installer
 
       - name: Set up Python 3
         uses: actions/setup-python@v2
