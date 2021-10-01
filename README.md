@@ -72,7 +72,7 @@ For all availble options see appdynamics.agent_installer.download reference.
 
 ## Development and testing
 
-For local of collection you can use molecule and vagrart+virtualbox with molecule-vagrant driver. You would need SaaS controller available.
+To run molecule tests locally you can use [Vagrant](https://www.vagrantup.com/)+[Virtualbox](https://www.virtualbox.org/wiki/Downloads) with molecule-vagrant driver. You would need SaaS controller available as well.
 
 ```shell
 cat << EOF > .env.yml

@@ -279,8 +279,8 @@ def run_module():
                     module.fail_json(
                         msg='Failed to create destination directory %s: %s' % (dest, e.strerror))
 
-            (rc, out, err) = module.run_command("rm -f %s/* && %s && printf %s > %s" % (dest, download_cmd,
-                                                                                        checksum, DIGEST_FILE), check_rc=True, cwd=dest, use_unsafe_shell=True)
+            (rc, out, err) = module.run_command("%s && printf %s > %s" % (download_cmd,
+                                                                          checksum, DIGEST_FILE), check_rc=True, cwd=dest, use_unsafe_shell=True)
             if rc != 0:
                 module.fail_json(
                     msg='Failed to retrieve submodule status: %s' % out + err)
