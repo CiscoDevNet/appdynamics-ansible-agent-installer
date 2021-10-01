@@ -1,26 +1,26 @@
 - name: Ensure ./zero-agent.sh is executable
   file:
-    path: "{{ appdynamics_agent_installer_stage_dir }}/zero-agent.sh"
+    path: "{{ agent_installer_stage_dir }}/zero-agent.sh"
     mode: "u+x,g+x,a+x"
     state: file
 
 - name: Install appdynamics agent_installer
-  become_user: "{{ appdynamics_agent_installer_user }}"
+  become_user: "{{ agent_installer_user }}"
   become: yes
   shell: 
-    chdir: "{{ appdynamics_agent_installer_stage_dir }}"
-    creates: "{{ appdynamics_agent_installer_dir }}/bin/zeroagent"
+    chdir: "{{ agent_installer_stage_dir }}"
+    creates: "{{ agent_installer_dir }}/bin/zeroagent"
     cmd: >
       ./zero-agent.sh
       install
-      --log-level '{{ appdynamics_agent_installer_log_level }}'
+      --log-level '{{ agent_installer_log_level }}'
       --application '{{ application_name }}' 
       --account '{{ controller_account_name }}'
       --access-key '{{ controller_account_access_key }}'
       --service-url '{{ controller_url }}'
-      --install-path '{{ appdynamics_agent_installer_install_path }}'
-      {% if appdynamics_agent_installer_user == 'root' %}--systemd='{{ appdynamics_agent_installer_enable_systemd | bool | lower }}'{% endif%}
-      {% if appdynamics_agent_installer_enable_proxy %}--proxy-url 'http:://{{ appdynamics_agent_installer_proxy_host }}:{{ appdynamics_agent_installer_proxy_port }}'{% endif %}
+      --install-path '{{ agent_installer_install_path }}'
+      {% if agent_installer_user == 'root' %}--systemd='{{ agent_installer_enable_systemd | bool | lower }}'{% endif%}
+      {% if agent_installer_enable_proxy %}--proxy-url 'http:://{{ agent_installer_proxy_host }}:{{ agent_installer_proxy_port }}'{% endif %}
   register: agent_installer_install_output
 
 - name: Print install output

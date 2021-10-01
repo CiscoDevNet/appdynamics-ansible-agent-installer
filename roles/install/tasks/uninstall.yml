@@ -1,17 +1,17 @@
 - name: Uninstall agent_installer
-  become_user: "{{ appdynamics_agent_installer_user }}"
+  become_user: "{{ agent_installer_user }}"
   become: yes
   command: 
-    cmd: "{{ appdynamics_agent_installer_dir }}/bin/zeroctl uninstall"
-    removes: "{{ appdynamics_agent_installer_dir }}/bin/zeroagent"
+    cmd: "{{ agent_installer_dir }}/bin/zeroctl uninstall"
+    removes: "{{ agent_installer_dir }}/bin/zeroagent"
   ignore_errors: yes
   register: agent_installer_uninstall
 
 - name: Clean agent_installer dir
-  become_user: "{{ appdynamics_agent_installer_user }}"
+  become_user: "{{ agent_installer_user }}"
   become: yes
   file:
-    path: "{{ appdynamics_agent_installer_dir }}"
+    path: "{{ agent_installer_dir }}"
     state: absent
   when: agent_installer_uninstall.changed
   ignore_errors: yes
