@@ -11,7 +11,7 @@
   become_user: "{{ agent_installer_user }}"
   become: yes
   file:
-    path: "{{ agent_installer_dir }}"
+    path: "{{ agent_installer_dir }}/"
     state: absent
   when: agent_installer_uninstall.changed
   ignore_errors: yes
