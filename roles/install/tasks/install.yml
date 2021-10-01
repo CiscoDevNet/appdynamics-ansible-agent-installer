@@ -15,7 +15,7 @@
       install
       --log-level '{{ agent_installer_log_level }}'
       --application '{{ agent_installer_application_name }}' 
-      --account '{{ agent_installer_controller_account_name }}'
+      --account '{{ agent_installer_account_name }}'
       --access-key '{{ agent_installer_access_key }}'
       --service-url '{{ controller_url }}'
       --install-path '{{ agent_installer_install_path }}'

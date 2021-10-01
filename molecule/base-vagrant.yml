@@ -38,7 +38,7 @@ provisioner:
         client_secret: ${APPDYNAMICS_API_CLIENT_SECRET}
         agent_installer_access_key: ${APPDYNAMICS_AGENT_ACCOUNT_ACCESS_KEY:-dummykey}
         controller_url: ${APPDYNAMICS_CONTROLLER_URL}
-        agent_installer_controller_account_name: ${APPDYNAMICS_AGENT_ACCOUNT_NAME}
+        agent_installer_account_name: ${APPDYNAMICS_AGENT_ACCOUNT_NAME}
         agent_installer_application_name: vzhuravlev-zfi-ansible
   playbooks:
     prepare: prepare.yaml
