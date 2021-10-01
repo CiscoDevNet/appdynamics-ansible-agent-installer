@@ -1,0 +1,31 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    agent_installer_temp_local_dir: /tmp/.appdynamics-agent_installer
+    agent_installer_stage_dir: /tmp/agent_installer-stage
+  tasks:
+    - name: Ensure target dir is present # and empty( add absent)
+      file:
+        path: "{{ agent_installer_stage_dir }}"
+        state: "{{ item }}"
+        mode: 0775
+      with_items:
+          # - absent
+          - directory
+
+    - name: Download
+      register: download
+      appdynamics.agent_installer.download:
+        client_id: "{{ client_id }}"
+        client_secret: "{{ client_secret }}"
+        controller_url: "{{ controller_url }}"
+        dest: "{{ agent_installer_stage_dir }}"
+      #check_mode: yes
+
+    - name: Install agent_installer
+      import_role:
+        name: appdynamics.agent_installer.install
+      vars:
+        agent_installer_user: vagrant
+      tags: molecule-idempotence-notest
