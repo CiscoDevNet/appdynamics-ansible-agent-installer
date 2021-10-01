@@ -39,7 +39,7 @@ provisioner:
         agent_installer_access_key: ${APPDYNAMICS_AGENT_ACCOUNT_ACCESS_KEY:-dummykey}
         controller_url: ${APPDYNAMICS_CONTROLLER_URL}
         agent_installer_account_name: ${APPDYNAMICS_AGENT_ACCOUNT_NAME}
-        agent_installer_application_name: vzhuravlev-zfi-ansible
+        agent_installer_application_name: agent-installer-ansible-test
   playbooks:
     prepare: prepare.yaml
     converge: ${MOLECULE_PLAYBOOK:-converge.yml}
