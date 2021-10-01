@@ -135,6 +135,7 @@ checksum_changed:
 import hashlib
 import json
 import os
+import errno
 from ansible_collections.appdynamics.agent_installer.plugins.module_utils.auth import get_token
 from ansible.module_utils.basic import env_fallback
 from ansible.module_utils.urls import fetch_url
@@ -269,6 +270,15 @@ def run_module():
 
     if not module.check_mode:
         if force or checksum_changed:
+
+            # Create dir first
+            try:
+                os.makedirs(dest)
+            except OSError as e:
+                if e.errno != errno.EEXIST:  # if not already exists
+                    module.fail_json(
+                        msg='Failed to create destination directory %s: %s' % (dest, e.strerror))
+
             (rc, out, err) = module.run_command("rm -f %s/* && %s && printf %s > %s" % (dest, download_cmd,
                                                                                         checksum, DIGEST_FILE), check_rc=True, cwd=dest, use_unsafe_shell=True)
             if rc != 0:
