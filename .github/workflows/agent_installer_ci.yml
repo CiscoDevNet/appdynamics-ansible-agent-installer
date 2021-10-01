@@ -15,8 +15,8 @@ jobs:
       fail-fast: true
       matrix:
         molecule_tests:
-          - agent_installer-direct
-          - agent_installer-proxy
+          - zeroagent-direct
+          - zeroagent-proxy
         ansible_ver:
           - "==2.9.*"
           - "==2.10.*"
