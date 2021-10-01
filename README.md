@@ -68,3 +68,22 @@ For all availble options see appdynamics.agent_installer.download reference.
 
 ## Known issues
 
+
+
+## Development and testing
+
+For local of collection you can use molecule and vagrart+virtualbox with molecule-vagrant driver. You would need SaaS controller available.
+
+```shell
+cat << EOF > .env.yml
+APPDYNAMICS_API_CLIENT_ID: api_user@account1
+APPDYNAMICS_API_CLIENT_SECRET: <somesecret>
+APPDYNAMICS_AGENT_ACCOUNT_ACCESS_KEY: <controllerkey>
+APPDYNAMICS_CONTROLLER_URL: https://account1.saas.appdynamics.com
+APPDYNAMICS_AGENT_ACCOUNT_NAME: account1
+EOF
+./install-collection.sh
+pip3 install molecule molecule-vagrant python-vagrant
+molecule --base-config molecule/base-vagrant.yml test -all
+```
+
