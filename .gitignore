@@ -5,3 +5,4 @@ sample/get_token.py
 appdynamics-agent_installer-*.gz
 .vagrant
 Vagrantfile
+.env.yml
