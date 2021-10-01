@@ -1,6 +1,3 @@
-
-# tier_name, node_name - not implemented yet
-
 # proxy_host
 # proxy_port
 enable_proxy: False
