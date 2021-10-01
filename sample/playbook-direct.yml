@@ -45,6 +45,6 @@
     - name: appdynamics.agent_installer.install
   vars:
     #appd_zfi_agent_distrib: /ansible_tower/zero-agent.tar
-    appdynamics_agent_installer_stage_dir: /home/vagrant/.appdynamics-agent_installer
-    appdynamics_agent_installer_install_path: /opt/appdynamics/agent_installer
-    # appdynamics_agent_installer_enable_systemd: true
+    agent_installer_stage_dir: /home/vagrant/.appdynamics-agent_installer
+    agent_installer_install_path: /opt/appdynamics/agent_installer
+    # agent_installer_enable_systemd: true

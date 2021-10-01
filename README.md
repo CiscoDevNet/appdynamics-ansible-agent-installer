@@ -32,8 +32,7 @@ When creating API client:
 
 TODO: via galaxy
 
-
-2. Download agent installer using `appdynamics.agent_installer.download` module locally:
+3. Download agent installer using `appdynamics.agent_installer.download` module locally:
 
 ```yaml
 - name: Appdynamics agent installer
@@ -59,8 +58,8 @@ For all availble options see appdynamics.agent_installer.download reference.
 ```yaml
     - name: Copy files to hosts
       copy:
-        src: "{{ appdynamics_agent_installer_temp_local_dir }}/"
-        dest: "{{ appdynamics_agent_installer_stage_dir }}"
+        src: "{{ agent_installer_temp_local_dir }}/"
+        dest: "{{ agent_installer_stage_dir }}"
 
     - name: Install agent_installer
       import_role:
@@ -69,4 +68,3 @@ For all availble options see appdynamics.agent_installer.download reference.
 
 ## Known issues
 
-appdynamics_agent_installer_user - 
