@@ -2,18 +2,9 @@
 - name: Converge
   hosts: all
   vars:
-    agent_installer_temp_local_dir: /tmp/.appdynamics-agent_installer
-    agent_installer_stage_dir: /tmp/agent_installer-stage
+    agent_installer_temp_local_dir: /tmp/appdynamics-agent-installer
+    agent_installer_stage_dir: /tmp/appdynamics-agent-installer-stage
   tasks:
-    - name: Ensure target dir is present # and empty( add absent)
-      file:
-        path: "{{ agent_installer_stage_dir }}"
-        state: "{{ item }}"
-        mode: 0775
-      with_items:
-          # - absent
-          - directory
-
     - name: Download
       register: download
       appdynamics.agent_installer.download:

@@ -1,20 +1,9 @@
 - name: Install zfi agents
   hosts: vagrant
   vars:
-    agent_installer_temp_local_dir: /tmp/.appdynamics-agent_installer
-    agent_installer_stage_dir: /tmp/agent_installer-stage
+    agent_installer_temp_local_dir: /tmp/appdynamics-agent-installer
+    agent_installer_stage_dir: /tmp/appdynamics-agent-installer-stage
   tasks:
-    - name: Ensure target dir is present # and empty( add absent)
-      run_once: yes
-      delegate_to: localhost
-      file:
-        path: "{{ agent_installer_temp_local_dir }}"
-        state: "{{ item }}"
-        mode: 0775
-      with_items:
-          # - absent
-          - directory
-
     - name: Download
       run_once: yes
       delegate_to: localhost
@@ -27,7 +16,6 @@
       #check_mode: yes
 
     # - name: Clean remote stage dir
-    #   beomce
     #   file:
     #     path: "{{ agent_installer_stage_dir }}"
     #     state: "{{ item }}"
