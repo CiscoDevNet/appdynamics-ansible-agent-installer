@@ -1,9 +1,9 @@
 # Ansible Collection - appdynamics.agent_installer
 
-This Ansible collection downloads and installs [AppDynamics Agent Installer](https://docs.appdynamics.com/21.9/en/application-monitoring/install-app-server-agents/agent-installer), which 
+This Ansible collection downloads and installs [AppDynamics Agent Installer](https://docs.appdynamics.com/latest/en/application-monitoring/install-app-server-agents/agent-installer), which:
 
-- Dploys Java and Machine Agents, and is compatible with Linux 
-- Automatically instruments applications 
+- Deploys Java and Machine Agents on Linux
+- Automatically instruments applications
 - Assigns unique names to tiers and nodes
 
 Ansible collection supports the following deployment patterns:
@@ -21,7 +21,7 @@ see example playbooks.
 
 ## Getting started
 
-1. In order to download agent installer using Agent installer API, it is required to use [API client](https://docs.appdynamics.com/21.3/en/extend-appdynamics/appdynamics-apis/api-clients#APIClients-Create_API_ClientCreatingAPIClients) on SaaS controller.
+1. In order to download agent installer using Agent installer API, it is required to use [API client](https://docs.appdynamics.com/latest/en/extend-appdynamics/appdynamics-apis/api-clients#APIClients-Create_API_ClientCreatingAPIClients) on SaaS controller.
 
 When creating API client:
 
@@ -53,7 +53,7 @@ Note: It is also helpful to set APPDYNAMICS_API_CLIENT_ID, APPDYNAMICS_API_CLIEN
 
 For all availble options see appdynamics.agent_installer.download reference.
 
-3. Copy files Install agent installer to target hosts, using retrieved zero agent archives
+4. Copy files Install agent installer to target hosts, using retrieved zero agent archives
 
 ```yaml
     - name: Copy files to hosts
@@ -67,8 +67,6 @@ For all availble options see appdynamics.agent_installer.download reference.
 ```
 
 ## Known issues
-
-
 
 ## Development and testing
 
@@ -86,4 +84,3 @@ EOF
 pip3 install molecule molecule-vagrant python-vagrant
 molecule --base-config molecule/base-vagrant.yml test -all
 ```
-
