@@ -285,7 +285,9 @@ def run_module():
     if not module.params["api_token"]:
         module.params["api_token"] = get_token(module)
 
-    dest = module.params["dest"]
+
+    dest = os.path.expanduser(module.params["dest"]) if "~" in module.params["dest"] else module.params["dest"]
+    
     force = module.params["force"]
     download_cmd = get_download_cmd(module)
 
