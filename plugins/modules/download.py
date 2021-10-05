@@ -154,8 +154,6 @@ except ImportError:
 #     from urllib.parse import urlencode
 
 API_VERSION = "v1beta"
-CMD_CHECKSUM_FILE = ".command_checksum"
-
 
 def get_download_cmd(module):
 
@@ -193,31 +191,6 @@ def get_download_cmd(module):
     else:
         return " ".join(json.loads(resp_bytes.read().decode("utf-8")))
 
-
-def get_checksum(download_cmd, dest):
-    """Returns tuple of (checksum, changed)"""
-
-    # If the download is not forced and there is a checksum, allow
-    # checksum match to skip the download.
-    download_cmd_digest = ""
-    try:
-        download_cmd_digest = hashlib.md5(download_cmd).hexdigest()
-    except TypeError:
-        download_cmd_digest = hashlib.md5(
-            download_cmd.encode('utf-8')).hexdigest()
-
-    try:
-        with open("%s/%s" % (dest, CMD_CHECKSUM_FILE), 'r') as f:
-            dest_digest = f.read()
-    except (IOError, OSError) as e:
-        # no CMD_CHECKSUM_FILE file found
-        return (download_cmd_digest, True)
-        # raise AnsibleParserError("an error occurred while trying to read the file '%s': %s" % (CMD_CHECKSUM_FILE, to_native(e)), orig_exc=e)
-
-    if download_cmd_digest == dest_digest:
-        return (download_cmd_digest, False)
-    else:
-        return (download_cmd_digest, True)
 
 def get_checksum_subdir(download_cmd, dest):
     """Returns tuple of (checksum, changed)"""
@@ -307,8 +280,7 @@ def run_module():
                     module.fail_json(
                         msg='Failed to create destination directory %s: %s' % (dest_subdir, e.strerror))
 
-            (rc, out, err) = module.run_command("%s && printf %s > %s" % (download_cmd,
-                                                                          checksum, CMD_CHECKSUM_FILE), check_rc=True, cwd=dest_subdir, use_unsafe_shell=True)
+            (rc, out, err) = module.run_command("%s" % (download_cmd), check_rc=True, cwd=dest_subdir, use_unsafe_shell=True)
             if rc != 0:
                 module.fail_json(
                     msg='Failed to retrieve submodule status: %s' % out + err)
