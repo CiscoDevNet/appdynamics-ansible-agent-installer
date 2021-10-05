@@ -163,6 +163,7 @@ except ImportError:
 
 API_VERSION = "v1beta"
 
+
 def get_download_cmd(module):
 
     url = module.params["controller_url"] + module.params["api_prefix"] + \
@@ -195,7 +196,6 @@ def get_download_cmd(module):
 
     # Dropping first line with "mktemp -d -t appd-zero-XXXXXXX"
     return " ".join(json.loads(resp_bytes.read().decode("utf-8"))[1:]).replace("&& ", "", 1)
-
 
 
 def get_checksum_subdir(download_cmd, dest):
@@ -263,19 +263,18 @@ def run_module():
     if not module.params["api_token"]:
         module.params["api_token"] = get_token(module)
 
+    dest = os.path.expanduser(
+        module.params["dest"]) if "~" in module.params["dest"] else module.params["dest"]
 
-    dest = os.path.expanduser(module.params["dest"]) if "~" in module.params["dest"] else module.params["dest"]
-    
     force = module.params["force"]
     download_cmd = get_download_cmd(module)
 
     (checksum, checksum_changed) = get_checksum_subdir(download_cmd, dest)
     dest_subdir = dest + "/" + checksum
 
-    
     if not module.check_mode:
         if force or checksum_changed:
-            
+
             # Create dir first
             try:
                 os.makedirs(dest_subdir)
@@ -284,7 +283,8 @@ def run_module():
                     module.fail_json(
                         msg='Failed to create destination directory %s: %s' % (dest_subdir, e.strerror))
 
-            (rc, out, err) = module.run_command("%s" % (download_cmd), check_rc=True, cwd=dest_subdir, use_unsafe_shell=True)
+            (rc, out, err) = module.run_command("%s" % (download_cmd),
+                                                check_rc=True, cwd=dest_subdir, use_unsafe_shell=True)
             if rc != 0:
                 module.fail_json(
                     msg='Failed to retrieve submodule status: %s' % out + err)
