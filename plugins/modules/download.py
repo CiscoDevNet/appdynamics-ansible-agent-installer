@@ -10,7 +10,7 @@ DOCUMENTATION = r'''
 ---
 module: download
 
-short_description: Module to download AppDynamics agent installer.
+short_description: Ansible Module to download AppDynamics agent installer.
 
 version_added: "1.0.0"
 
@@ -74,11 +74,6 @@ options:
         required: false
         type: bool
         default: false
-    # drop_mktemp:
-    #     description: Drop part of the download command that creates temporary folder (i.e. mktemp -d -t appd-zero-XXXXXXX)
-    #     required: false
-    #     type: bool
-    #     default: true
     dest:
         description: Provide path where to store downloaded artifacts
         required: true
@@ -95,7 +90,7 @@ author:
 '''
 
 EXAMPLES = r'''
-#Get token
+
 - name: Download agent installer
   appdynamics.agent_installer.download:
     controller_url: https://company1.saas.appdynamics.com
@@ -109,7 +104,15 @@ EXAMPLES = r'''
     client_id: user@company1
     client_secret: somesecret
     install_machine: False
-    dest: /opt/appdynamics/agent_installer-store
+    dest: /opt/appdynamics/agent_installer_stagestore
+
+- name: Get download command without downloading
+  appdynamics.agent_installer.download:
+    controller_url: https://company1.saas.appdynamics.com
+    client_id: user@company1
+    client_secret: somesecret
+    dest: /opt/appdynamics/agent_installer_stagestore
+  check_mode: yes
 '''
 
 RETURN = r'''
@@ -118,17 +121,22 @@ download:
     description: Shell download command
     returned: success
     type: str
-    sample: TODO
+    sample: curl https://download-files.saas.appd-test.com/download-file/zero-agent-bootstrap/21.10.0.756/appdynamics-zero-agent-bootstrap-21.10.0.756.sh -o zero-agent.sh && chmod +x zero-agent.sh && ./zero-agent.sh download sun-java -u https://download-files.saas.appd-test.com -v 21.9.0.33073 -c 280df399fdfbac024ac6bf2e0921d9ee && ./zero-agent.sh download ibm-java -u https://download-files.saas.appd-test.com -v 21.9.0.33073 -c 779e1b663686f91d96eceeba1e20b791 && ./zero-agent.sh download machine -u https://download-files.saas.appd-test.com -v 21.9.0.3184 -c 3bebea27d413261ff02752bf86c4bfbf && ./zero-agent.sh download zero -u https://download-files.saas.appd-test.com -v 21.10.0.756 -c fef64691869ff578fa973ca73715da47
 checksum:
     description: Checksum of download command. Can be used to make decisions if agent upgrade is required.
     returned: success
     type: str
-    sample: TODO
+    sample: a4e12de7078bc61e77c1b0d567a61064
 checksum_changed:
     description: Indicates if command checksum is changed
     returned: success
     type: bool
     sample: true
+dest_subdir:
+    description: Sub directory with installation files.
+    returned: success
+    type: string
+    sample: /tmp/appdynamics-agent-installer/a4e12de7078bc61e77c1b0d567a61064
 
 '''
 
@@ -186,10 +194,8 @@ def get_download_cmd(module):
         module.fail_json(msg=info["msg"], error=json.loads(info["body"]))
 
     # Dropping first line with "mktemp -d -t appd-zero-XXXXXXX"
-    if module.params['drop_mktemp']:
-        return " ".join(["true"] + json.loads(resp_bytes.read().decode("utf-8"))[1:])
-    else:
-        return " ".join(json.loads(resp_bytes.read().decode("utf-8")))
+    return " ".join(json.loads(resp_bytes.read().decode("utf-8"))[1:]).replace("&& ", "", 1)
+
 
 
 def get_checksum_subdir(download_cmd, dest):
@@ -234,7 +240,6 @@ def run_module():
         install_java=dict(type="bool", required=False, default=True),
         install_machine=dict(type="bool", required=False, default=True),
         install_infra=dict(type="bool", required=False, default=False),
-        drop_mktemp=dict(type="bool", required=False, default=True),
         dest=dict(type="str", required=True),
         force=dict(type="bool", required=False, default=False)
     )
@@ -270,7 +275,6 @@ def run_module():
     
     if not module.check_mode:
         if force or checksum_changed:
-            
             
             # Create dir first
             try:
