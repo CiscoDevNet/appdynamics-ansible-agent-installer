@@ -56,15 +56,21 @@ For all availble options see appdynamics.agent_installer.download reference.
 4. Copy files Install agent installer to target hosts, using retrieved zero agent archives
 
 ```yaml
-    - name: Copy files to hosts
-      copy:
-        src: "{{ agent_installer_temp_local_dir }}/"
-        dest: "{{ agent_installer_stage_dir }}"
 
-    - name: Install agent_installer
-      import_role:
-        name: appdynamics.agent_installer.install
+- name: Copy files to hosts
+  copy:
+    src: "/tmp/agentdir/"
+    dest: "/tmp/appdynamics/{{ download.checksum }}"
+
+- name: Install agent_installer
+  import_role:
+    name: appdynamics.agent_installer.install
+  vars: 
+    agent_installer_stage_dir: "/tmp/appdynamics/{{ download.checksum }}"
+
 ```
+
+
 
 ## Known issues
 

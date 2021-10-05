@@ -74,11 +74,11 @@ options:
         required: false
         type: bool
         default: false
-    drop_mktemp:
-        description: Drop part of the download command that creates temporary folder (i.e. mktemp -d -t appd-zero-XXXXXXX)
-        required: false
-        type: bool
-        default: true
+    # drop_mktemp:
+    #     description: Drop part of the download command that creates temporary folder (i.e. mktemp -d -t appd-zero-XXXXXXX)
+    #     required: false
+    #     type: bool
+    #     default: true
     dest:
         description: Provide path where to store downloaded artifacts
         required: true
@@ -154,7 +154,7 @@ except ImportError:
 #     from urllib.parse import urlencode
 
 API_VERSION = "v1beta"
-DIGEST_FILE = ".download_digest"
+CMD_CHECKSUM_FILE = ".command_checksum"
 
 
 def get_download_cmd(module):
@@ -207,14 +207,37 @@ def get_checksum(download_cmd, dest):
             download_cmd.encode('utf-8')).hexdigest()
 
     try:
-        with open("%s/%s" % (dest, DIGEST_FILE), 'r') as f:
+        with open("%s/%s" % (dest, CMD_CHECKSUM_FILE), 'r') as f:
             dest_digest = f.read()
     except (IOError, OSError) as e:
-        # no DIGEST_FILE file found
+        # no CMD_CHECKSUM_FILE file found
         return (download_cmd_digest, True)
-        # raise AnsibleParserError("an error occurred while trying to read the file '%s': %s" % (DIGEST_FILE, to_native(e)), orig_exc=e)
+        # raise AnsibleParserError("an error occurred while trying to read the file '%s': %s" % (CMD_CHECKSUM_FILE, to_native(e)), orig_exc=e)
 
     if download_cmd_digest == dest_digest:
+        return (download_cmd_digest, False)
+    else:
+        return (download_cmd_digest, True)
+
+def get_checksum_subdir(download_cmd, dest):
+    """Returns tuple of (checksum, changed)"""
+
+    # If the download is not forced and there is a checksum, allow
+    # checksum match to skip the download.
+    download_cmd_digest = ""
+    try:
+        download_cmd_digest = hashlib.md5(download_cmd).hexdigest()
+    except TypeError:
+        download_cmd_digest = hashlib.md5(
+            download_cmd.encode('utf-8')).hexdigest()
+
+    try:
+        dir_ls = os.listdir("%s" % (dest))
+    except (IOError, OSError) as e:
+        # no subdir with downloaded agents found
+        return (download_cmd_digest, True)
+
+    if download_cmd_digest in dir_ls:
         return (download_cmd_digest, False)
     else:
         return (download_cmd_digest, True)
@@ -266,32 +289,34 @@ def run_module():
     force = module.params["force"]
     download_cmd = get_download_cmd(module)
 
-    (checksum, checksum_changed) = get_checksum(download_cmd, dest)
+    (checksum, checksum_changed) = get_checksum_subdir(download_cmd, dest)
+    dest_subdir = dest + "/" + checksum
 
+    
     if not module.check_mode:
         if force or checksum_changed:
-
+            
+            
             # Create dir first
             try:
-                os.makedirs(dest)
+                os.makedirs(dest_subdir)
             except OSError as e:
                 if e.errno != errno.EEXIST:  # if not already exists
                     module.fail_json(
-                        msg='Failed to create destination directory %s: %s' % (dest, e.strerror))
+                        msg='Failed to create destination directory %s: %s' % (dest_subdir, e.strerror))
 
             (rc, out, err) = module.run_command("%s && printf %s > %s" % (download_cmd,
-                                                                          checksum, DIGEST_FILE), check_rc=True, cwd=dest, use_unsafe_shell=True)
+                                                                          checksum, CMD_CHECKSUM_FILE), check_rc=True, cwd=dest_subdir, use_unsafe_shell=True)
             if rc != 0:
                 module.fail_json(
                     msg='Failed to retrieve submodule status: %s' % out + err)
                 result["message"] = out + err
             result["changed"] = True
 
-    # if len(download_cmd) > 0:
-
     result["download_cmd"] = download_cmd
     result["checksum"] = checksum
     result["checksum_changed"] = checksum_changed
+    result["dest_subdir"] = dest_subdir
 
     module.exit_json(**result)
 
