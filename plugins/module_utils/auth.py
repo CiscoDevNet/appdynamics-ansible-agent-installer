@@ -40,7 +40,7 @@ def get_token(module):
     if status_code == -1:
         module.fail_json(msg="Failed to connect", error=info["msg"])
     if status_code >= 400:
-        module.fail_json(msg=info["msg"], error=json.loads(info["body"])["message"])
+        module.fail_json(msg=info["msg"], error=json.loads(info["body"]))
 
     return json.loads(resp_bytes.read().decode("utf-8"))["access_token"]
 
