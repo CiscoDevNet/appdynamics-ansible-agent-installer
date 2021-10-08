@@ -5,19 +5,22 @@
 # - include: dependencies.yml
 #   tags: agent_installer_dependencies
 
+- block:
   # download to local ansible controller first
-- include: download_local.yml
-  when: agent_installer_download and agent_installer_download_mode == 'local'
-  tags: agent_installer_download
+  - include: download_local.yml
+    when: agent_installer_download_mode == 'local'
 
   # download directly to remote host
-- include: download_remote.yml
-  when: agent_installer_download and agent_installer_download_mode == 'remote'
-  tags: agent_installer_download
+  - include: download_remote.yml
+    when: agent_installer_download_mode == 'remote'
 
-- include: check_install_required.yml
-  tags: agent_installer_install
+  - include: check_install_required.yml
 
-- include: install.yml
-  tags: agent_installer_install
-  when: agent_installer_install_required
+  - include: install.yml
+    when: agent_installer_install_required
+  when: agent_installer_state == 'installed'
+
+- block:
+    - include: uninstall.yml
+  
+  when: agent_installer_state == 'absent'

@@ -1,5 +1,4 @@
 - include: uninstall.yml
-  tags: agent_installer_uninstall
 
 - name: Ensure ./zero-agent.sh is executable
   file:
@@ -20,25 +19,6 @@
     chdir: "{{ agent_installer_stage_dir }}"
     creates: "{{ agent_installer_dir }}/bin/zeroagent"
   register: agent_installer_install_output
-
-# - name: Configure appdynamics agent_installer
-#   become_user: "{{ agent_installer_user }}"
-#   become: True
-#   environment: 
-#     APPDYNAMICS_ACCOUNT_ACCESS_KEY: "{{ agent_installer_access_key }}"
-#   shell: 
-#     chdir: "{{ agent_installer_dir }}"
-#     cmd: >
-#       ./bin/zeroctl
-#       configure
-#       --log-level '{{ agent_installer_log_level }}'
-#       --application '{{ agent_installer_application_name }}' 
-#       --account '{{ agent_installer_account_name }}'
-#       --access-key ${APPDYNAMICS_ACCOUNT_ACCESS_KEY}
-#       --service-url '{{ agent_installer_controller_url }}'
-#       {% if agent_installer_enable_proxy %}--proxy-url 'http:://{{ agent_installer_proxy_host }}:{{ agent_installer_proxy_port }}'{% endif %}
-#   register: agent_installer_install_output
-#   when: not agent_installer_install_output.changed
 
 - name: Print install output
   debug:

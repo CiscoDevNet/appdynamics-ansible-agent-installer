@@ -23,5 +23,6 @@ agent_installer_validate_install: True
 
 # remote(directlry to hosts) or local(via ansible controller)
 agent_installer_download_mode: local
-# set to False to disable download alltogether
-agent_installer_download: True
+
+# agent_installer_state: installed or absent
+agent_installer_state: installed
