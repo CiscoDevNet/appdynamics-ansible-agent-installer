@@ -8,18 +8,18 @@ This Ansible collection downloads and installs [AppDynamics Agent Installer](htt
 
 Ansible collection supports the following deployment patterns:
 
-- Download the agent installer directly to target hosts
-- Download the agent installer to Ansible controller and distribute it across target hosts
+- Download the agent installer directly to target hosts (remote)
+- Download the agent installer to Ansible controller and distribute it across target hosts (local)
 
 see example playbooks.
 
 ## Requirements
 
-- AppDynamics SaaS controller only
+- AppDynamics SaaS controller only. For more details please refer to [agent installer docs](https://docs.appdynamics.com/latest/en/application-monitoring/install-app-server-agents/agent-installer#AgentInstaller-AgentInstallerRequirements)
 - Ansible 2.9 and above
-- `unzip` and `curl` on target hosts
+- `unzip` and `curl` must be installed on target hosts
 
-## Getting started
+## Using this collection
 
 1. In order to download agent installer using Agent installer API, it is required to use [API client](https://docs.appdynamics.com/latest/en/extend-appdynamics/appdynamics-apis/api-clients#APIClients-Create_API_ClientCreatingAPIClients) on SaaS controller.
 
@@ -30,49 +30,53 @@ When creating API client:
 
 2. Install collection
 
+```shell
+git clone <this repo>
+./install_collection.sh
+```
+
+OR 
+
 TODO: via galaxy
 
-3. Download agent installer using `appdynamics.agent_installer.download` module locally:
+3. Create sample playbook
 
 ```yaml
+
 - name: Appdynamics agent installer
   hosts: all
-  tasks:
-    - name: Download
-      run_once: yes
-      delegate_to: localhost
-      register: download
-      appdynamics.agent_installer.download:
-        client_id: api_user@mycompany
-        client_secret: <secret>
-        controller_url: https://mycompany.saas.appdynamics.com
-        dest: /tmp/agentdir
+  vars_files: 
+    - agent_installer_vars.yaml
+  roles:
+    - name: appdynamics.agent_installer.agent_installer
 ```
 
-Note: It is also helpful to set APPDYNAMICS_API_CLIENT_ID, APPDYNAMICS_API_CLIENT_SECRET environment variables when running module locally instead of providing client_id, client_secret.
-
-For all availble options see appdynamics.agent_installer.download reference.
-
-4. Copy files Install agent installer to target hosts, using retrieved zero agent archives
+and sample vars file agent_installer_vars.yaml (it's to user to choose how to load variables of course)
 
 ```yaml
-
-- name: Copy files to hosts
-  copy:
-    src: "/tmp/agentdir/"
-    dest: "/tmp/appdynamics/{{ download.checksum }}"
-
-- name: Install agent_installer
-  import_role:
-    name: appdynamics.agent_installer.install
-  vars: 
-    agent_installer_stage_dir: "/tmp/appdynamics/{{ download.checksum }}"
-
+agent_installer_download_mode: local
+agent_installer_client_id: api_user@mycompany
+agent_installer_client_secret: <secret>
+agent_installer_controller_url: https://mycompany.saas.appdynamics.com
+agent_installer_access_key: <you controleler access key>
+agent_installer_account_name: mycompany
+agent_installer_application_name: zfi-ansible-sample-app
 ```
 
+## Tips
 
+For human readable outputs, running this role with stdout callback = yaml is recommended in favor of default json:
 
-## Known issues
+```shell
+export ANSIBLE_STDOUT_CALLBACK=yaml
+```
+
+or permanently by setting stdout_callback=yaml in the [default] section of ansible.cfg
+
+```ini
+[default]
+stdout_callback = yaml
+```
 
 ## Development and testing
 
@@ -88,5 +92,5 @@ APPDYNAMICS_AGENT_ACCOUNT_NAME: account1
 EOF
 ./install-collection.sh
 pip3 install molecule molecule-vagrant python-vagrant
-molecule --base-config molecule/base-vagrant.yml test -all
+molecule --base-config molecule/base-vagrant.yml test --all
 ```

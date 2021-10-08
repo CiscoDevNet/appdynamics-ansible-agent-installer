@@ -96,7 +96,7 @@ EXAMPLES = r'''
     controller_url: https://company1.saas.appdynamics.com
     client_id: user@company1
     client_secret: somesecret
-    dest: /opt/appdynamics/agent_installer-store
+    dest: /opt/appdynamics/agent_installer_store
 
 - name: Download agent installer (java agent only)
   appdynamics.agent_installer.download:
@@ -256,6 +256,7 @@ def run_module():
         ],
         required_one_of=[
             ("install_java", "install_machine", "install_infra"),
+            # ("api_token", "client_secret", ""
         ],
         supports_check_mode=True
     )

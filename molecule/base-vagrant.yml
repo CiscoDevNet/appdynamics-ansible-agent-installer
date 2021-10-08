@@ -34,12 +34,12 @@ provisioner:
   inventory:
     group_vars:
       all:
-        client_id: ${APPDYNAMICS_API_CLIENT_ID}
-        client_secret: ${APPDYNAMICS_API_CLIENT_SECRET}
+        agent_installer_client_id: ${APPDYNAMICS_API_CLIENT_ID}
+        agent_installer_client_secret: ${APPDYNAMICS_API_CLIENT_SECRET}
         agent_installer_access_key: ${APPDYNAMICS_AGENT_ACCOUNT_ACCESS_KEY:-dummykey}
-        controller_url: ${APPDYNAMICS_CONTROLLER_URL}
+        agent_installer_controller_url: ${APPDYNAMICS_CONTROLLER_URL}
         agent_installer_account_name: ${APPDYNAMICS_AGENT_ACCOUNT_NAME}
-        agent_installer_application_name: agent-installer-ansible-test
+        agent_installer_application_name: agent-installer-ansible-github-test
   playbooks:
     prepare: prepare.yaml
     converge: ${MOLECULE_PLAYBOOK:-converge.yml}

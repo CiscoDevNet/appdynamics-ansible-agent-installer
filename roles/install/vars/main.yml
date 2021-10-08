@@ -1,1 +1,0 @@
-agent_installer_dir: "{{ agent_installer_install_path if agent_installer_install_path == '/opt/appdynamics/zeroagent' else agent_installer_install_path+'/appdynamics/agent_installer' }}"

@@ -1,0 +1,26 @@
+
+- include: validate.yml
+  tags: agent_installer_validate
+
+# - include: dependencies.yml
+#   tags: agent_installer_dependencies
+
+- block:
+  # download to local ansible controller first
+  - include: download_local.yml
+    when: agent_installer_download_mode == 'local'
+
+  # download directly to remote host
+  - include: download_remote.yml
+    when: agent_installer_download_mode == 'remote'
+
+  - include: check_install_required.yml
+
+  - include: install.yml
+    when: agent_installer_install_required
+  when: agent_installer_state == 'installed'
+
+- block:
+    - include: uninstall.yml
+  
+  when: agent_installer_state == 'absent'

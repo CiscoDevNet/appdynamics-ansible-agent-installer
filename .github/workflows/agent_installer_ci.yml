@@ -15,8 +15,9 @@ jobs:
       fail-fast: true
       matrix:
         molecule_tests:
-          - zeroagent-direct
-          - zeroagent-proxy
+          - zeroagent-local
+          - zeroagent-remove
+          - zeroagent-user
         ansible_ver:
           - "==2.9.*"
           - "==2.10.*"
@@ -51,11 +52,10 @@ jobs:
         env: 
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
+          ANSIBLE_STDOUT_CALLBACK: yaml
           MOLECULE_DISTRO: ${{ matrix.distro }}
           APPDYNAMICS_API_CLIENT_ID: ${{ secrets.APPDYNAMICS_API_CLIENT_ID }}
           APPDYNAMICS_API_CLIENT_SECRET: ${{ secrets.APPDYNAMICS_API_CLIENT_SECRET }}
           APPDYNAMICS_AGENT_ACCOUNT_ACCESS_KEY: ${{ secrets.APPDYNAMICS_AGENT_ACCOUNT_ACCESS_KEY }}
           APPDYNAMICS_CONTROLLER_URL: ${{ secrets.APPDYNAMICS_CONTROLLER_URL }}
           APPDYNAMICS_AGENT_ACCOUNT_NAME: ${{ secrets.APPDYNAMICS_AGENT_ACCOUNT_NAME }}
-
-          

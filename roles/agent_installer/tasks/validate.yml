@@ -1,0 +1,10 @@
+- name: Check required role inputs
+  assert:
+    that: 
+      - agent_installer_controller_url is defined
+      - agent_installer_application_name is defined
+      - agent_installer_access_key is defined
+      - agent_installer_download_mode in ('remote', 'local')
+      - agent_installer_log_level in ('panic', 'fatal', 'error', 'warning', 'info', 'debug', 'trace')
+      - agent_installer_state in ('installed', 'absent')
+    success_msg: All input variables are provided
