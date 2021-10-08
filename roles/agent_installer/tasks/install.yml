@@ -6,47 +6,48 @@
     mode: "u+x,g+x,a+x"
     state: file
 
-- name: Install appdynamics agent_installer
-  become_user: "{{ agent_installer_user }}"
-  become: true
-  no_log: true
-  shell: >
-    {{ agent_installer_install_command }}
-    && cd {{ agent_installer_dir }}
-    && printf '%s\n' {{ agent_installer_install_command | checksum }} > .ansible_install_command
-    && printf '%s\n' {{ agent_installer_download_checksum }} > .ansible_download_command
-  args:
-    chdir: "{{ agent_installer_stage_dir }}"
-    creates: "{{ agent_installer_dir }}/bin/zeroagent"
-  register: agent_installer_install_output
+- block:
+  - name: Install appdynamics agent_installer
+    become_user: "{{ agent_installer_user }}"
+    become: true
+    no_log: true
+    shell: >
+      {{ agent_installer_install_command }}
+      && cd {{ agent_installer_dir }}
+      && printf '%s\n' {{ agent_installer_install_command | checksum }} > .ansible_install_command
+      && printf '%s\n' {{ agent_installer_download_checksum }} > .ansible_download_command
+    args:
+      chdir: "{{ agent_installer_stage_dir }}"
+      creates: "{{ agent_installer_dir }}/bin/zeroagent"
+    register: agent_installer_install_output
 
-- name: Print install output
-  debug:
-    var: agent_installer_install_output.stdout
-  when: agent_installer_install_output.changed
+  - name: Validate agent installation
+    wait_for:
+      path: "{{ item }}"
+    loop:
+      - "{{ agent_installer_install_path }}/updater.lck"
+      - "{{ agent_installer_install_path }}/watchdog.lck"
+      - "{{ agent_installer_install_path }}/configs/cfg.lck"
+    when: >
+      agent_installer_validate_install and
+      agent_installer_user == 'root' and
+      agent_installer_enable_systemd
 
-- name: Validate agent installation
-  wait_for:
-    path: "{{ item }}"
-  loop:
-    - "{{ agent_installer_install_path }}/updater.lck"
-    - "{{ agent_installer_install_path }}/watchdog.lck"
-    - "{{ agent_installer_install_path }}/configs/cfg.lck"
-  when: >
-    agent_installer_validate_install and
-    agent_installer_user == 'root' and
-    agent_installer_enable_systemd
-
-- name: Check agent logs
-  wait_for:
-    path: "{{ item.path }}"
-    search_regex: "{{ item.search_regex }}"
-    delay: 1
-  loop:
-    - search_regex: "Successfully reported instrumentation states"
-      path: "{{ agent_installer_install_path }}/logs/agent.log"
-  when: >
-    agent_installer_validate_install and
-    agent_installer_user == 'root' and
-    agent_installer_enable_systemd and
-    agent_installer_log_level in ('info', 'debug', 'trace')
+  - name: Check agent logs
+    wait_for:
+      path: "{{ item.path }}"
+      search_regex: "{{ item.search_regex }}"
+      delay: 1
+    loop:
+      - search_regex: "Successfully reported instrumentation states"
+        path: "{{ agent_installer_install_path }}/logs/agent.log"
+    when: >
+      agent_installer_validate_install and
+      agent_installer_user == 'root' and
+      agent_installer_enable_systemd and
+      agent_installer_log_level in ('info', 'debug', 'trace')
+  always:
+      - name: Print install output
+        debug:
+          var: agent_installer_install_output.stdout
+        when: agent_installer_install_output.changed
