@@ -49,5 +49,9 @@
   always:
       - name: Print install output
         debug:
-          var: agent_installer_install_output.stdout
+          msg: | 
+             "{{ agent_installer_install_output.stdout }}"
+             "{{ agent_installer_install_output.stderr }}"
+          verbosity: 0
+        failed_when: agent_installer_install_output.rc != 0
         when: agent_installer_install_output.changed
