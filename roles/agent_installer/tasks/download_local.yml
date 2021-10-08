@@ -27,3 +27,4 @@
     - name: Set download directory fact
       set_fact:
         agent_installer_stage_dir: "{{ agent_installer_stage_dir_prefix }}/{{ download.checksum }}"
+        agent_installer_download_checksum: "{{ download.checksum }}"

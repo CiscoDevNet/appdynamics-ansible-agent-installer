@@ -1,3 +1,6 @@
+- include: uninstall.yml
+  tags: agent_installer_uninstall
+
 - name: Ensure ./zero-agent.sh is executable
   file:
     path: "{{ agent_installer_stage_dir }}/zero-agent.sh"
@@ -6,28 +9,41 @@
 
 - name: Install appdynamics agent_installer
   become_user: "{{ agent_installer_user }}"
-  become: True
-  environment: 
-    APPDYNAMICS_ACCOUNT_ACCESS_KEY: "{{ agent_installer_access_key }}"
-  shell: 
+  become: true
+  no_log: true
+  shell: >
+    {{ agent_installer_install_command }}
+    && cd {{ agent_installer_dir }}
+    && printf '%s\n' {{ agent_installer_install_command | checksum }} > .ansible_install_command
+    && printf '%s\n' {{ agent_installer_download_checksum }} > .ansible_download_command
+  args:
     chdir: "{{ agent_installer_stage_dir }}"
     creates: "{{ agent_installer_dir }}/bin/zeroagent"
-    cmd: >
-      ./zero-agent.sh
-      install
-      --log-level '{{ agent_installer_log_level }}'
-      --application '{{ agent_installer_application_name }}' 
-      --account '{{ agent_installer_account_name }}'
-      --access-key ${APPDYNAMICS_ACCOUNT_ACCESS_KEY}
-      --service-url '{{ agent_installer_controller_url }}'
-      --install-path '{{ agent_installer_install_path }}'
-      {% if agent_installer_user == 'root' %}--systemd='{{ agent_installer_enable_systemd | bool | lower }}'{% endif%}
-      {% if agent_installer_enable_proxy %}--proxy-url 'http:://{{ agent_installer_proxy_host }}:{{ agent_installer_proxy_port }}'{% endif %}
   register: agent_installer_install_output
+
+# - name: Configure appdynamics agent_installer
+#   become_user: "{{ agent_installer_user }}"
+#   become: True
+#   environment: 
+#     APPDYNAMICS_ACCOUNT_ACCESS_KEY: "{{ agent_installer_access_key }}"
+#   shell: 
+#     chdir: "{{ agent_installer_dir }}"
+#     cmd: >
+#       ./bin/zeroctl
+#       configure
+#       --log-level '{{ agent_installer_log_level }}'
+#       --application '{{ agent_installer_application_name }}' 
+#       --account '{{ agent_installer_account_name }}'
+#       --access-key ${APPDYNAMICS_ACCOUNT_ACCESS_KEY}
+#       --service-url '{{ agent_installer_controller_url }}'
+#       {% if agent_installer_enable_proxy %}--proxy-url 'http:://{{ agent_installer_proxy_host }}:{{ agent_installer_proxy_port }}'{% endif %}
+#   register: agent_installer_install_output
+#   when: not agent_installer_install_output.changed
 
 - name: Print install output
   debug:
     var: agent_installer_install_output.stdout
+  when: agent_installer_install_output.changed
 
 - name: Validate agent installation
   wait_for:
