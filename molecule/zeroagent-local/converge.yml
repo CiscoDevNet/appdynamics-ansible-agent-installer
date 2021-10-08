@@ -1,6 +1,8 @@
-- name: Install zfi agents
+- name: Converge
   hosts: all
   tasks:
     - name: Install agent_installer
       import_role:
         name: appdynamics.agent_installer.agent_installer
+      vars:
+        agent_installer_download_mode: local

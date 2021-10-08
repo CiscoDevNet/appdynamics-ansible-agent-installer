@@ -15,8 +15,9 @@ jobs:
       fail-fast: true
       matrix:
         molecule_tests:
-          - zeroagent-direct
-          - zeroagent-proxy
+          - zeroagent-local
+          - zeroagent-remove
+          - zeroagent-user
         ansible_ver:
           - "==2.9.*"
           - "==2.10.*"
@@ -58,5 +59,3 @@ jobs:
           APPDYNAMICS_AGENT_ACCOUNT_ACCESS_KEY: ${{ secrets.APPDYNAMICS_AGENT_ACCOUNT_ACCESS_KEY }}
           APPDYNAMICS_CONTROLLER_URL: ${{ secrets.APPDYNAMICS_CONTROLLER_URL }}
           APPDYNAMICS_AGENT_ACCOUNT_NAME: ${{ secrets.APPDYNAMICS_AGENT_ACCOUNT_NAME }}
-
-          

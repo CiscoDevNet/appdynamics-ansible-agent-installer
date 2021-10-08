@@ -39,40 +39,28 @@ OR
 
 TODO: via galaxy
 
-3. Download agents locally first
+3. Create sample playbook
 
 ```yaml
 
 - name: Appdynamics agent installer
   hosts: all
+  vars_files: 
+    - agent_installer_vars.yaml
   roles:
     - name: appdynamics.agent_installer.agent_installer
-      vars:
-        agent_installer_download_mode: local
-        agent_installer_client_id: api_user@mycompany
-        agent_installer_client_secret: <secret>
-        agent_installer_controller_url: https://mycompany.saas.appdynamics.com
-        agent_installer_access_key: <you controleler access key>
-        agent_installer_account_name: mycompany
-        agent_installer_application_name: zfi-ansible-sample-app
 ```
 
-...or directrly to hosts
+and sample vars file agent_installer_vars.yaml (it's to user to choose how to load variables of course)
 
 ```yaml
-
-- name: Appdynamics agent installer
-  hosts: all
-  roles:
-    - name: appdynamics.agent_installer.agent_installer
-      vars:
-        agent_installer_download_mode: remote
-        agent_installer_client_id: api_user@mycompany
-        agent_installer_client_secret: <secret>
-        agent_installer_controller_url: https://mycompany.saas.appdynamics.com
-        agent_installer_access_key: <you controleler access key>
-        agent_installer_account_name: mycompany
-        agent_installer_application_name: zfi-ansible-sample-app
+agent_installer_download_mode: local
+agent_installer_client_id: api_user@mycompany
+agent_installer_client_secret: <secret>
+agent_installer_controller_url: https://mycompany.saas.appdynamics.com
+agent_installer_access_key: <you controleler access key>
+agent_installer_account_name: mycompany
+agent_installer_application_name: zfi-ansible-sample-app
 ```
 
 ## Tips
