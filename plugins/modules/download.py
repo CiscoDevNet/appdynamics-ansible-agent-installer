@@ -77,7 +77,7 @@ options:
     dest:
         description: Provide path where to store downloaded artifacts
         required: true
-        type: str
+        type: path
     force:
         description: Forces agent redownload
         required: false
@@ -121,7 +121,6 @@ download:
     description: Shell download command
     returned: success
     type: str
-    sample: curl https://download-files.saas.appd-test.com/download-file/zero-agent-bootstrap/21.10.0.756/appdynamics-zero-agent-bootstrap-21.10.0.756.sh -o zero-agent.sh && chmod +x zero-agent.sh && ./zero-agent.sh download sun-java -u https://download-files.saas.appd-test.com -v 21.9.0.33073 -c 280df399fdfbac024ac6bf2e0921d9ee && ./zero-agent.sh download ibm-java -u https://download-files.saas.appd-test.com -v 21.9.0.33073 -c 779e1b663686f91d96eceeba1e20b791 && ./zero-agent.sh download machine -u https://download-files.saas.appd-test.com -v 21.9.0.3184 -c 3bebea27d413261ff02752bf86c4bfbf && ./zero-agent.sh download zero -u https://download-files.saas.appd-test.com -v 21.10.0.756 -c fef64691869ff578fa973ca73715da47
 checksum:
     description: Checksum of download command. Can be used to make decisions if agent upgrade is required.
     returned: success
@@ -135,7 +134,7 @@ checksum_changed:
 dest_subdir:
     description: Sub directory with installation files.
     returned: success
-    type: string
+    type: str
     sample: /tmp/appdynamics-agent-installer/a4e12de7078bc61e77c1b0d567a61064
 
 '''
@@ -240,7 +239,7 @@ def run_module():
         install_java=dict(type="bool", required=False, default=True),
         install_machine=dict(type="bool", required=False, default=True),
         install_infra=dict(type="bool", required=False, default=False),
-        dest=dict(type="str", required=True),
+        dest=dict(type="path", required=True),
         force=dict(type="bool", required=False, default=False)
     )
 
@@ -264,8 +263,7 @@ def run_module():
     if not module.params["api_token"]:
         module.params["api_token"] = get_token(module)
 
-    dest = os.path.expanduser(
-        module.params["dest"]) if "~" in module.params["dest"] else module.params["dest"]
+    dest = module.params["dest"]
 
     force = module.params["force"]
     download_cmd = get_download_cmd(module)
