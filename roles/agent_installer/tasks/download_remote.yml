@@ -1,4 +1,4 @@
-    - name: Download (to Ansible controller)
+    - name: Download (direct to remote host)
       register: download
       appdynamics.agent_installer.download:
         client_id: "{{ agent_installer_client_id | default(omit) }}"
