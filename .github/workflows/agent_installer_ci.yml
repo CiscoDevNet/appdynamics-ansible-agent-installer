@@ -16,7 +16,7 @@ jobs:
       matrix:
         molecule_tests:
           - zeroagent-local
-          - zeroagent-remove
+          - zeroagent-remote
           - zeroagent-user
         ansible_ver:
           - "==2.9.*"
