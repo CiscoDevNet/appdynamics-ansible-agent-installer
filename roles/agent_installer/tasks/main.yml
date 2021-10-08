@@ -1,0 +1,22 @@
+
+- include: validate.yml
+  tags: agent_installer_validate
+
+# - include: dependencies.yml
+#   tags: agent_installer_dependencies
+
+- include: uninstall.yml
+  tags: agent_installer_uninstall
+
+  # download to local ansible controller first
+- include: download_local.yml
+  when: agent_installer_download and agent_installer_download_mode == 'local'
+  tags: agent_installer_download
+
+  # download directly to remote host
+- include: download_remote.yml
+  when: agent_installer_download and agent_installer_download_mode == 'remote'
+  tags: agent_installer_download
+
+- include_tasks: install.yml
+  tags: agent_installer_install

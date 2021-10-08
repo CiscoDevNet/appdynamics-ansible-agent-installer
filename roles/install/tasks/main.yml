@@ -1,8 +1,0 @@
-# - include: dependencies.yml
-#   tags: agent_installer_dependencies
-
-- include: uninstall.yml
-  tags: agent_installer_uninstall
-
-- include_tasks: install.yml
-  tags: agent_installer_install

@@ -19,7 +19,7 @@ see example playbooks.
 - Ansible 2.9 and above
 - `unzip` and `curl` on target hosts
 
-## Getting started
+## Using this collection
 
 1. In order to download agent installer using Agent installer API, it is required to use [API client](https://docs.appdynamics.com/latest/en/extend-appdynamics/appdynamics-apis/api-clients#APIClients-Create_API_ClientCreatingAPIClients) on SaaS controller.
 
@@ -72,7 +72,20 @@ For all availble options see appdynamics.agent_installer.download reference.
 
 
 
-## Known issues
+## Tips
+
+For human readable outputs, running this role with stdout callback = yaml is recommended in favor of default json:
+
+```shell
+export ANSIBLE_STDOUT_CALLBACK=yaml
+```
+
+or permanently by setting stdout_callback=yaml in the [default] section of ansible.cfg
+
+```ini
+[default]
+stdout_callback = yaml
+```
 
 ## Development and testing
 
@@ -88,5 +101,5 @@ APPDYNAMICS_AGENT_ACCOUNT_NAME: account1
 EOF
 ./install-collection.sh
 pip3 install molecule molecule-vagrant python-vagrant
-molecule --base-config molecule/base-vagrant.yml test -all
+molecule --base-config molecule/base-vagrant.yml test --all
 ```

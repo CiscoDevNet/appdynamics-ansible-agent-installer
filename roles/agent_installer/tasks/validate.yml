@@ -1,0 +1,7 @@
+- name: Check required role inputs
+  assert:
+    that: 
+      - agent_installer_controller_url is defined
+      - agent_installer_application_name is defined
+      - agent_installer_access_key is defined
+    success_msg: All input variables are provided
