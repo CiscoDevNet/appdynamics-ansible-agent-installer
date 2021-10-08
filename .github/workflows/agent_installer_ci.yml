@@ -51,6 +51,7 @@ jobs:
         env: 
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
+          ANSIBLE_STDOUT_CALLBACK: yaml
           MOLECULE_DISTRO: ${{ matrix.distro }}
           APPDYNAMICS_API_CLIENT_ID: ${{ secrets.APPDYNAMICS_API_CLIENT_ID }}
           APPDYNAMICS_API_CLIENT_SECRET: ${{ secrets.APPDYNAMICS_API_CLIENT_SECRET }}

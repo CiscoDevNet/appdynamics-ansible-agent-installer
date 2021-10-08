@@ -34,3 +34,4 @@
 
 - debug:
     var: agent_installer_install_required
+    verbosity: 1
