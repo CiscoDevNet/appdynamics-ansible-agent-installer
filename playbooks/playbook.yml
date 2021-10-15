@@ -1,5 +1,7 @@
 - name: Install zfi agents
   hosts: all
+  vars_files: 
+    - agent_installer_vars.yaml
   tasks:
     - name: Install agent_installer
       import_role:

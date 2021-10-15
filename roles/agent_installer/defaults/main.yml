@@ -1,10 +1,10 @@
 # agent_installer_proxy_host
 # agent_installer_proxy_port
-agent_installer_enable_proxy: False
+agent_installer_enable_proxy: false
 
 agent_installer_install_path: "{{ '/opt/appdynamics/zeroagent' if agent_installer_user == 'root' else ansible_env.HOME }}"
 #agent_installer_stage_dir: /tmp/.appdynamics-agent_installer
-agent_installer_enable_systemd: True
+agent_installer_enable_systemd: true
 
 # Install as sudo or as user
 agent_installer_user: root
@@ -16,8 +16,8 @@ agent_installer_log_level: info
 agent_installer_temp_local_dir: /tmp/appdynamics-agent-installer
 agent_installer_stage_dir_prefix: /tmp/appdynamics-agent-installer-stage
 
-# Set to False to skip post install validations
-agent_installer_validate_install: True
+# Set to false to skip post install validations
+agent_installer_validate_install: true
 
 # Download mode
 
