@@ -129,7 +129,7 @@ APPDYNAMICS_AGENT_ACCOUNT_ACCESS_KEY: <controllerkey>
 APPDYNAMICS_CONTROLLER_URL: https://account1.saas.appdynamics.com
 APPDYNAMICS_AGENT_ACCOUNT_NAME: account1
 EOF
-./install-collection.sh
+./install_collection.sh
 pip3 install molecule molecule-vagrant python-vagrant
 molecule --base-config molecule/base-vagrant.yml test --all
 ```
