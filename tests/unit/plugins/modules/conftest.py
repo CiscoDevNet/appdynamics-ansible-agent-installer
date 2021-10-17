@@ -8,11 +8,15 @@ from ansible_collections.appdynamics.agent_installer.plugins.module_utils import
 from ansible_collections.appdynamics.agent_installer.plugins.modules import download
 
 # Test in checkmode to avoid actual download attempt
+
+
 @pytest.fixture
 def default_args():
     return {"_ansible_check_mode": True, "client_id": "user@account", "client_secret": "supersecret", "controller_url": "http://localhost", "dest": "/tmp/appdynamics-agent-installer"}
 
 # Test in checkmode to avoid actual download attempt
+
+
 @pytest.fixture
 def default_args_token():
     return {"_ansible_check_mode": True, "api_token": "footoken", "controller_url": "http://localhost", "dest": "/tmp/appdynamics-agent-installer"}
