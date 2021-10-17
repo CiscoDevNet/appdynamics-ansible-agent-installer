@@ -12,14 +12,16 @@ from ansible_collections.appdynamics.agent_installer.plugins.modules import down
 
 @pytest.fixture
 def default_args():
-    return {"_ansible_check_mode": True, "client_id": "user@account", "client_secret": "supersecret", "controller_url": "http://localhost", "dest": "/tmp/appdynamics-agent-installer"}
+    return {"_ansible_check_mode": True, "client_id": "user@account", "client_secret": "supersecret",
+            "controller_url": "http://localhost", "dest": "/tmp/appdynamics-agent-installer"}
 
 # Test in checkmode to avoid actual download attempt
 
 
 @pytest.fixture
 def default_args_token():
-    return {"_ansible_check_mode": True, "api_token": "footoken", "controller_url": "http://localhost", "dest": "/tmp/appdynamics-agent-installer"}
+    return {"_ansible_check_mode": True, "api_token": "footoken",
+            "controller_url": "http://localhost", "dest": "/tmp/appdynamics-agent-installer"}
 
 
 @pytest.fixture
@@ -41,7 +43,8 @@ def jwt_token(monkeypatch):
 @pytest.fixture
 def download_cmd(monkeypatch):
     def get_mock_download_cmd(*args, **kwargs):
-        return "curl https://download-files.saas.appd-test.com/download-file/zero-agent-bootstrap/21.10.0.875/appdynamics-zero-agent-bootstrap-21.10.0.875.sh" + \
+        return "curl" + \
+            " https://download-files.saas.appd-test.com/download-file/zero-agent-bootstrap/21.10.0.875/appdynamics-zero-agent-bootstrap-21.10.0.875.sh" + \
             " -o zero-agent.sh" + \
             " && chmod +x zero-agent.sh" + \
             " && ./zero-agent.sh download sun-java -u https://download-files.saas.appd-test.com -v 21.5.0.32605 -c 00cc2ce77f93dc262347c60bf4434e0b" + \
