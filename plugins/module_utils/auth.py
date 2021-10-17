@@ -43,8 +43,3 @@ def get_token(module):
         module.fail_json(msg=info["msg"], error=json.loads(info["body"]))
 
     return json.loads(resp_bytes.read().decode("utf-8"))["access_token"]
-
-
-# def store_token(token):
-#     """This stores token in env for further usage"""
-#     os.environ["APPDYNAMICS_ZFI_TOKEN"] = token

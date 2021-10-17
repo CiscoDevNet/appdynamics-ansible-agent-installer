@@ -24,11 +24,11 @@ options:
         type: str
     client_id:
         description: Client ID (i.e. <username>@<account>)
-        required: true
+        required: false
         type: str
     client_secret:
         description: Client secret
-        required: true
+        required: false
         type: str
     api_prefix:
         description: Zero Agent API prefix (i.e. /zero)
@@ -225,9 +225,9 @@ def run_module():
 
     module_args = dict(
         controller_url=dict(type="str", required=True),
-        client_id=dict(type="str", required=True, fallback=(
+        client_id=dict(type="str", required=False, fallback=(
             env_fallback, ['APPDYNAMICS_API_CLIENT_ID'])),
-        client_secret=dict(type="str", required=True, no_log=True, fallback=(
+        client_secret=dict(type="str", required=False, no_log=True, fallback=(
             env_fallback, ['APPDYNAMICS_API_CLIENT_SECRET'])),
         api_token=dict(type="str", required=False, no_log=True,
                        fallback=(env_fallback, ['APPDYNAMICS_API_TOKEN'])),
@@ -251,11 +251,11 @@ def run_module():
     module = AnsibleModule(
         argument_spec=module_args,
         mutually_exclusive=[
-            ("client_id", "api_token"),
+            ("client_secret", "api_token"),
         ],
         required_one_of=[
             ("install_java", "install_machine", "install_infra"),
-            # ("api_token", "client_secret", ""
+            ("api_token", "client_secret")
         ],
         supports_check_mode=True
     )
@@ -273,7 +273,6 @@ def run_module():
 
     if not module.check_mode:
         if force or checksum_changed:
-
             # Create dir first
             try:
                 os.makedirs(dest_subdir)
