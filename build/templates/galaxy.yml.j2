@@ -16,22 +16,22 @@ readme: README.md
 # A list of the collection's content authors. Can be just the name or in the format 'Full Name <email> (url)
 # @nicks:irc/im.site#channel'
 authors:
-- https://github.com/v-zhuravlev
+  - https://github.com/v-zhuravlev
 
 # A short summary description of the collection
 description: This Ansible collection downloads and installs AppDynamics Agent Installer
 
 # Either a single license or a list of licenses for content inside of a collection. Ansible Galaxy currently only
 # accepts L(SPDX,https://spdx.org/licenses/) licenses. This key is mutually exclusive with 'license_file'
-license: 
- - Apache-2.0
+license:
+  - Apache-2.0
 
 # A list of tags you want to associate with the collection for indexing/searching. A tag name has the same character
 # requirements as 'namespace' and 'name'
-tags: 
- - appdynamics
- - agent_installer
- - apm
+tags:
+  - appdynamics
+  - agent_installer
+  - apm
 
 # Collections that this collection requires to be installed for it to be usable. The key of the dict is the
 # collection label 'namespace.name'. The value is a version range
@@ -55,7 +55,7 @@ issues: https://github.com/CiscoDevNet/appdynamics-ansible-agent-installer/issue
 # artifact. A pattern is matched from the relative path of the file or directory of the collection directory. This
 # uses 'fnmatch' to match the files or directories. Some directories and files like 'galaxy.yml', '*.pyc', '*.retry',
 # and '.git' are always filtered
-build_ignore: 
+build_ignore:
   - molecule/*
   - .vagrant/*
   - .github/*

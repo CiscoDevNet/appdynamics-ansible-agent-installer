@@ -28,14 +28,18 @@ When creating API client:
 
 2. Install collection
 
+from ansible-galaxy:
+
 ```shell
-git clone <this repo>
-./install_collection.sh
+ansible-galaxy collection install appdynaics.agent_installer
 ```
 
-OR 
+or from source:
 
-TODO: via galaxy
+```shell
+git clone https://github.com/CiscoDevNet/appdynamics-ansible-agent-installer.git
+./install_collection.sh
+```
 
 3. Create sample playbook
 
@@ -88,6 +92,7 @@ Variables related to agents download:
 |`agent_installer_force`| Set to true to force download even if archives with the same download command are present| false|
 
 Variables related to agents installation:
+
 |Variable<img width="200"/>     | Description | Default |
 |--|--|--|
 |`agent_installer_access_key`|(required) Controller access key||
@@ -102,6 +107,7 @@ Variables related to agents installation:
 |`agent_installer_user`|System user to install and run Agent installer |root|
 |`agent_installer_log_level`|Logging level to use, choose from `panic fatal error warning info debug trace` |info|
 |`agent_installer_validate_install`|Set to 'false' to skip post install validations|true|
+
 ## Tips
 
 For human readable outputs, running this role with stdout callback = yaml is recommended in favor of default json:
@@ -115,21 +121,4 @@ or permanently by setting stdout_callback=yaml in the [default] section of ansib
 ```ini
 [default]
 stdout_callback = yaml
-```
-
-## Development and testing
-
-To run molecule tests locally you can use [Vagrant](https://www.vagrantup.com/)+[Virtualbox](https://www.virtualbox.org/wiki/Downloads) with molecule-vagrant driver. You would need SaaS controller available as well.
-
-```shell
-cat << EOF > .env.yml
-APPDYNAMICS_API_CLIENT_ID: api_user@account1
-APPDYNAMICS_API_CLIENT_SECRET: <somesecret>
-APPDYNAMICS_AGENT_ACCOUNT_ACCESS_KEY: <controllerkey>
-APPDYNAMICS_CONTROLLER_URL: https://account1.saas.appdynamics.com
-APPDYNAMICS_AGENT_ACCOUNT_NAME: account1
-EOF
-./install_collection.sh
-pip3 install molecule molecule-vagrant python-vagrant
-molecule --base-config molecule/base-vagrant.yml test --all
 ```

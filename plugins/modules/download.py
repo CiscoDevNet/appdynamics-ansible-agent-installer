@@ -10,9 +10,9 @@ DOCUMENTATION = r'''
 ---
 module: download
 
-short_description: Ansible Module to download AppDynamics agent installer.
+short_description: Ansible module to download AppDynamics agent installer.
 
-version_added: "1.0.0"
+version_added: "21.10.0"
 
 description: |
     Gets download command in order to download required agent installer.

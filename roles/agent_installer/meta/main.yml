@@ -3,7 +3,7 @@ galaxy_info:
   author: Vitaly Zhuravlev (https://github.com/v-zhuravlev)
   role_name: install
   company: AppDynamics
-  description: This role installs and configures the AppDynamics Agent Installer
+  description: This role downloads and installs AppDynamics agent installer.
   license: Apache2
   min_ansible_version: 2.9
   platforms:
