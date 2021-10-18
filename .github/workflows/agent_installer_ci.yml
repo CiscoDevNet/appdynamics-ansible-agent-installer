@@ -16,7 +16,6 @@ jobs:
       matrix:
         ansible_ver:
           - "==2.9.*"
-          - "==2.10.*"
           - ">=2.10" # latest
     steps:
       - name: Check out code
