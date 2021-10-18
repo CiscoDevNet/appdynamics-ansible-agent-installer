@@ -1,0 +1,7 @@
+
+# .ansible-lint
+skip_list:  # or 'skip_list' to silence them completely
+  - experimental  # all rules tagged as experimental
+  - no-handler  # Tasks that run when changed should likely be handlers
+use_default_rules: true
+parseable: true
