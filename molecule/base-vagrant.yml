@@ -14,7 +14,7 @@ platforms:
       ssh.remote_user: 'vagrant'
       synced_folder: true
       cachier: false
-    boot_timeout: "600"
+      vm.boot_timeout: 600
     box: ubuntu/focal64
     # box_version: 32.20200422.0
     memory: "512"
@@ -25,7 +25,7 @@ platforms:
       ssh.remote_user: 'vagrant'
       synced_folder: true
       cachier: false
-    boot_timeout: "600"
+      vm.boot_timeout: 600
     box: centos/8
     # box_version: 32.20200422.0
     memory: "512"
