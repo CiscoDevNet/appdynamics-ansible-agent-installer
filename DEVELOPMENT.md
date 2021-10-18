@@ -2,7 +2,8 @@
 
 ## Molecule local tests
 
-To run molecule tests locally you can use [Vagrant](https://www.vagrantup.com/)+[Virtualbox](https://www.virtualbox.org/wiki/Downloads) with molecule-vagrant driver. You would need SaaS controller available as well.
+To run molecule tests locally you can use molecule with molecule-docker driver.
+You would need SaaS controller available as well.
 
 ```shell
 cat << EOF > .env.yml
@@ -13,6 +14,24 @@ APPDYNAMICS_CONTROLLER_URL: https://account1.saas.appdynamics.com
 APPDYNAMICS_AGENT_ACCOUNT_NAME: account1
 EOF
 ./install_collection.sh
-pip3 install molecule molecule-vagrant python-vagrant ansible-lint[community,yamllint]
-molecule --base-config molecule/base-vagrant.yml test --all
+pip3 install molecule molecule[docker] ansible-lint[community,yamllint]
+molecule --base-config molecule/base-docker.yml test --all
+```
+
+If you need to explore your molecule container interactively you can run tests like so:
+
+```
+molecule --base-config molecule/base-docker.yml create -s zeroagent-local
+```
+
+or
+
+```
+molecule --base-config molecule/base-docker.yml test -s zeroagent-local --destroy never
+```
+
+and then do:
+
+```
+molecule --base-config molecule/base-docker.yml login -s zeroagent-local
 ```

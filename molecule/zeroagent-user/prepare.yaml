@@ -8,3 +8,8 @@
         name:
           - unzip
           - curl
+    - name: Create test_user
+      become: true
+      user:
+        name: test_user
+        state: present

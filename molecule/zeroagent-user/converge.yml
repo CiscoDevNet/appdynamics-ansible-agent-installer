@@ -1,9 +1,11 @@
 - name: Converge
   hosts: all
+  vars:
+    ansible_user: test_user
   tasks:
     - name: Install agent_installer
       import_role:
         name: appdynamics.agent_installer.agent_installer
       vars:
         agent_installer_download_mode: remote
-        agent_installer_user: vagrant
+        agent_installer_user: "{{ ansible_user }}"

@@ -7,13 +7,16 @@ defaults:
     working-directory: ansible_collections/appdynamics/agent_installer
 jobs:
   molecule:
-    runs-on: macos-latest # where vagrant is
+    runs-on: ubuntu-latest
     env:
       PY_COLORS: 1
       ANSIBLE_FORCE_COLOR: 1
     strategy:
       fail-fast: true
       matrix:
+        distro:
+          - centos8
+          - debian10
         ansible_ver:
           - "==2.9.*"
           - ">=2.10" # latest
@@ -29,7 +32,7 @@ jobs:
           python-version: '3.x'
     
       - name: Install test dependencies.
-        run: pip3 install "ansible${{ matrix.ansible_ver }}" molecule-vagrant python-vagrant ansible-lint[community,yamllint]
+        run: pip3 install "ansible${{ matrix.ansible_ver }}" molecule[docker] ansible-lint[community,yamllint]
       
       - name: Build the collection
         run: |
@@ -43,7 +46,7 @@ jobs:
         run: >-
           molecule --version &&
           ansible --version &&
-          molecule --base-config molecule/base-vagrant.yml --debug test --all
+          molecule --base-config molecule/base-docker.yml --debug test --all
         env: 
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
