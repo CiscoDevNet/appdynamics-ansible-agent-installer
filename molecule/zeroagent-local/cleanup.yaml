@@ -1,0 +1,8 @@
+---
+- name: Prepare
+  hosts: localhost
+  tasks:
+    - name: Remove local cache dir
+      file:
+        path: "{{ agent_installer_temp_local_dir }}"
+        state: absent

@@ -44,8 +44,10 @@ provisioner:
         agent_installer_controller_url: ${APPDYNAMICS_CONTROLLER_URL}
         agent_installer_account_name: ${APPDYNAMICS_AGENT_ACCOUNT_NAME}
         agent_installer_application_name: agent-installer-ansible-github-test
+        agent_installer_temp_local_dir: /tmp/appdynamics-agent-installer
   playbooks:
     prepare: prepare.yaml
+    cleanup: cleanup.yaml
     converge: ${MOLECULE_PLAYBOOK:-converge.yml}
 verifier:
   name: ansible
