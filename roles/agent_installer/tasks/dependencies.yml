@@ -1,6 +1,6 @@
 - name: Install required packages
-  become: yes
+  become: true
   package:
-    name: 
+    name:
       - unzip
       - curl

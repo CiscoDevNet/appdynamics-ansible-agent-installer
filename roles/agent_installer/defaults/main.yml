@@ -3,7 +3,7 @@
 agent_installer_enable_proxy: false
 
 agent_installer_install_path: "{{ '/opt/appdynamics/zeroagent' if agent_installer_user == 'root' else ansible_env.HOME }}"
-#agent_installer_stage_dir: /tmp/.appdynamics-agent_installer
+# agent_installer_stage_dir: /tmp/.appdynamics-agent_installer
 agent_installer_enable_systemd: true
 
 # Install as sudo or as user

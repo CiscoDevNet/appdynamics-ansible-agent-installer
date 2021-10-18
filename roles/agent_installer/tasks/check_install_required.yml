@@ -2,13 +2,13 @@
 
 
 - name: Prepare install command
-  no_log: yes
+  no_log: true
   set_fact:
     agent_installer_install_command: >-
       ./zero-agent.sh
       install
       --log-level '{{ agent_installer_log_level }}'
-      --application '{{ agent_installer_application_name }}' 
+      --application '{{ agent_installer_application_name }}'
       --account '{{ agent_installer_account_name }}'
       --access-key '{{ agent_installer_access_key }}'
       --service-url '{{ agent_installer_controller_url }}'
@@ -17,13 +17,13 @@
       {% if agent_installer_enable_proxy %}--proxy-url 'http:://{{ agent_installer_proxy_host }}:{{ agent_installer_proxy_port }}'{% endif %}
 
 - name: Check download command
-  shell: grep {{ agent_installer_download_checksum }} {{ agent_installer_dir }}/.ansible_download_command -q
+  command: grep {{ agent_installer_download_checksum }} {{ agent_installer_dir }}/.ansible_download_command -q
   register: download_cmd_used
   changed_when: download_cmd_used.rc in (1,2)
   failed_when: download_cmd_used.rc not in (0,1,2)
 
 - name: Check install command
-  shell: grep {{ agent_installer_install_command | checksum }} {{ agent_installer_dir }}/.ansible_install_command -q
+  command: grep {{ agent_installer_install_command | checksum }} {{ agent_installer_dir }}/.ansible_install_command -q
   register: install_cmd_used
   changed_when: install_cmd_used.rc in (1,2)
   failed_when: install_cmd_used.rc not in (0,1,2)
@@ -32,6 +32,7 @@
   set_fact:
     agent_installer_install_required: "{{ True if (download_cmd_used.changed or install_cmd_used.changed) else False }}"
 
-- debug:
+- name: Print agent_installer_install_required var
+  debug:
     var: agent_installer_install_required
     verbosity: 1

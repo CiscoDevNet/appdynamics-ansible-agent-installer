@@ -1,8 +1,8 @@
 ---
-#example run:
+# example run:
 # export ANSIBLE_GALAXY_TOKEN="xxxxxxxxx"
 #
-# ansible-playbook galaxy_deploy.yml 
+# ansible-playbook galaxy_deploy.yml
 - hosts: localhost
   connection: local
   gather_facts: false
@@ -34,14 +34,14 @@
         src: templates/galaxy.yml.j2
         dest: ../galaxy.yml
       register: galaxy_yml
-    - name: Build the collection. 
+    - name: Build the collection.
       command: >
         ansible-galaxy collection build -f
         chdir=../
       when: galaxy_yml.changed
       tags:
         - skip_ansible_lint
-    - name: Publish the collection. 
+    - name: Publish the collection.
       command: >
         ansible-galaxy collection publish ./appdynamics-agent_installer-{{ tag }}.tar.gz
         chdir=../

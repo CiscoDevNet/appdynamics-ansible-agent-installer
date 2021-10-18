@@ -6,11 +6,13 @@ driver:
   provider:
     # Can be any supported provider (virtualbox, parallels, libvirt, etc)
     name: virtualbox
-
+lint: |
+  set -e
+  ansible-lint .
 platforms:
   - name: ubuntu20
     config_options:
-      ssh.keep_alive: yes
+      ssh.keep_alive: true
       ssh.remote_user: 'vagrant'
       synced_folder: true
       cachier: false
@@ -21,7 +23,7 @@ platforms:
     cpus: "1"
   - name: centos8
     config_options:
-      ssh.keep_alive: yes
+      ssh.keep_alive: true
       ssh.remote_user: 'vagrant'
       synced_folder: true
       cachier: false

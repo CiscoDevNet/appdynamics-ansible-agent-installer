@@ -1,17 +1,17 @@
 - name: Uninstall agent_installer
   become_user: "{{ agent_installer_user }}"
-  become: yes
-  command: 
+  become: true
+  command:
     cmd: "{{ agent_installer_dir }}/bin/zeroctl uninstall"
     removes: "{{ agent_installer_dir }}/bin/zeroagent"
-  ignore_errors: yes
+  ignore_errors: true
   register: agent_installer_uninstall
 
 - name: Clean agent_installer dir
   become_user: "{{ agent_installer_user }}"
-  become: yes
+  become: true
   file:
     path: "{{ agent_installer_dir }}/"
     state: absent
   when: agent_installer_uninstall.changed
-  ignore_errors: yes
+  ignore_errors: true

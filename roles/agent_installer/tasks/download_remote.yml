@@ -1,23 +1,23 @@
-    - name: Download (direct to remote host)
-      register: download
-      appdynamics.agent_installer.download:
-        client_id: "{{ agent_installer_client_id | default(omit) }}"
-        client_secret: "{{ agent_installer_client_secret | default(omit) }}"
-        controller_url: "{{ agent_installer_controller_url | default(omit) }}"
-        api_prefix: "{{ agent_installer_api_prefix | default(omit) }}"
-        api_token: "{{ agent_installer_api_token | default(omit) }}"
-        java_version: "{{ agent_installer_java_version | default(omit) }}"
-        machine_version: "{{ agent_installer_machine_version | default(omit) }}"
-        infra_version: "{{ agent_installer_infra_version | default(omit) }}"
-        zero_version: "{{ agent_installer_zero_version | default(omit) }}"
-        install_java: "{{ agent_installer_install_java | default(omit) }}"
-        install_machine: "{{ agent_installer_install_machine | default(omit) }}"
-        install_infra: "{{ agent_installer_install_infra | default(omit) }}"
-        force: "{{ agent_installer_force | default(omit) }}"
-        dest: "{{ agent_installer_stage_dir_prefix }}"
-      #check_mode: yes
+- name: Download (direct to remote host)
+  register: download
+  appdynamics.agent_installer.download:
+    client_id: "{{ agent_installer_client_id | default(omit) }}"
+    client_secret: "{{ agent_installer_client_secret | default(omit) }}"
+    controller_url: "{{ agent_installer_controller_url | default(omit) }}"
+    api_prefix: "{{ agent_installer_api_prefix | default(omit) }}"
+    api_token: "{{ agent_installer_api_token | default(omit) }}"
+    java_version: "{{ agent_installer_java_version | default(omit) }}"
+    machine_version: "{{ agent_installer_machine_version | default(omit) }}"
+    infra_version: "{{ agent_installer_infra_version | default(omit) }}"
+    zero_version: "{{ agent_installer_zero_version | default(omit) }}"
+    install_java: "{{ agent_installer_install_java | default(omit) }}"
+    install_machine: "{{ agent_installer_install_machine | default(omit) }}"
+    install_infra: "{{ agent_installer_install_infra | default(omit) }}"
+    force: "{{ agent_installer_force | default(omit) }}"
+    dest: "{{ agent_installer_stage_dir_prefix }}"
+  # check_mode: yes
 
-    - name: Set download directory fact
-      set_fact:
-        agent_installer_stage_dir: "{{ download.dest_subdir }}"
-        agent_installer_download_checksum: "{{ download.checksum }}"
+- name: Set download directory fact
+  set_fact:
+    agent_installer_stage_dir: "{{ download.dest_subdir }}"
+    agent_installer_download_checksum: "{{ download.checksum }}"

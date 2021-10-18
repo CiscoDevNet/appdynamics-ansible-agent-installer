@@ -1,6 +1,6 @@
 - name: Check required role inputs
   assert:
-    that: 
+    that:
       - agent_installer_controller_url is defined
       - agent_installer_application_name is defined
       - agent_installer_access_key is defined

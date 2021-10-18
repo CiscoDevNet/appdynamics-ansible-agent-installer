@@ -34,7 +34,7 @@ jobs:
           python-version: '3.x'
     
       - name: Install test dependencies.
-        run: pip3 install "ansible${{ matrix.ansible_ver }}" molecule-vagrant python-vagrant
+        run: pip3 install "ansible${{ matrix.ansible_ver }}" molecule-vagrant python-vagrant ansible-lint[community,yamllint]
       
       - name: Build the collection
         run: |
