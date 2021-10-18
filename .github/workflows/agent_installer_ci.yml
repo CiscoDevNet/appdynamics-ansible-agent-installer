@@ -14,9 +14,9 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        distro:
-          - centos8
-          - debian10
+        # distro:
+        #   - centos8
+        #   - debian10
         ansible_ver:
           - "==2.9.*"
           - ">=2.10" # latest
@@ -51,7 +51,7 @@ jobs:
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
           ANSIBLE_STDOUT_CALLBACK: yaml
-          MOLECULE_DISTRO: ${{ matrix.distro }}
+          #MOLECULE_DISTRO: ${{ matrix.distro }}
           APPDYNAMICS_API_CLIENT_ID: ${{ secrets.APPDYNAMICS_API_CLIENT_ID }}
           APPDYNAMICS_API_CLIENT_SECRET: ${{ secrets.APPDYNAMICS_API_CLIENT_SECRET }}
           APPDYNAMICS_AGENT_ACCOUNT_ACCESS_KEY: ${{ secrets.APPDYNAMICS_AGENT_ACCOUNT_ACCESS_KEY }}

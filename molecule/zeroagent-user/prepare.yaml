@@ -4,10 +4,19 @@
   tasks:
     - name: Install required packages
       become: true
-      package:
+      apt:
         name:
           - unzip
           - curl
+        update_cache: yes
+      when: ansible_os_family == 'Debian'
+    - name: Install required packages
+      become: true
+      yum:
+        name:
+          - unzip
+          - curl
+      when: ansible_os_family == 'RedHat'
     - name: Create test_user
       become: true
       user:
