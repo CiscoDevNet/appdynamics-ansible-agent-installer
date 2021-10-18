@@ -14,9 +14,9 @@ platforms:
     config_options:
       ssh.keep_alive: true
       ssh.remote_user: 'vagrant'
-      synced_folder: true
+      synced_folder: false
       cachier: false
-      vm.boot_timeout: 900
+      vm.boot_timeout: 600
     box: ubuntu/focal64
     # box_version: 32.20200422.0
     memory: "512"
@@ -25,9 +25,9 @@ platforms:
     config_options:
       ssh.keep_alive: true
       ssh.remote_user: 'vagrant'
-      synced_folder: true
+      synced_folder: false
       cachier: false
-      vm.boot_timeout: 900
+      vm.boot_timeout: 600
     box: centos/8
     # box_version: 32.20200422.0
     memory: "512"
