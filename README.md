@@ -60,7 +60,7 @@ agent_installer_download_mode: local
 agent_installer_client_id: api_user@mycompany
 agent_installer_client_secret: <secret>
 agent_installer_controller_url: https://mycompany.saas.appdynamics.com
-agent_installer_access_key: <you controleler access key>
+agent_installer_access_key: <your controller access key>
 agent_installer_account_name: mycompany
 agent_installer_application_name: zfi-ansible-sample-app
 ```
