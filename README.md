@@ -31,7 +31,7 @@ When creating API client:
 from ansible-galaxy:
 
 ```shell
-ansible-galaxy collection install appdynaics.agent_installer
+ansible-galaxy collection install appdynamics.agent_installer
 ```
 
 or from source:
