@@ -16,7 +16,7 @@ readme: README.md
 # A list of the collection's content authors. Can be just the name or in the format 'Full Name <email> (url)
 # @nicks:irc/im.site#channel'
 authors:
-  - https://github.com/v-zhuravlev
+  - v-zhuravlev
 
 # A short summary description of the collection
 description: This Ansible collection downloads and installs AppDynamics Agent Installer

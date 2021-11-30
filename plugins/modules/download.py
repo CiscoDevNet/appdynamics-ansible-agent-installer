@@ -86,7 +86,7 @@ options:
 
 
 author:
-    - Vitaly Zhuravlev (@v-zhuravlev)
+    - Vitaly Zhuravlev
 '''
 
 EXAMPLES = r'''
